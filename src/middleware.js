@@ -16,7 +16,7 @@ const PUBLIC_ROUTES = [
   "/pricing",
 ];
 
-export async function proxy(request) {
+export async function middleware(request) {
   let response = NextResponse.next({
     request: { headers: request.headers },
   });
