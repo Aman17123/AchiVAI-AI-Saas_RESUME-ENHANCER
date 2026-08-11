@@ -1,6 +1,6 @@
-# CVForge — Full SaaS Implementation Plan
+# AchiVAI — Full SaaS Implementation Plan
 
-> Product name: **CVForge** · AI: **Google Gemini** · Auth/DB: **Supabase** · Payments: **Razorpay**
+> Product name: **AchiVAI** · AI: **Google Gemini** · Auth/DB: **Supabase** · Payments: **Razorpay**
 > Stack: Next.js 16 (App Router) / React 19 / Zustand / Tailwind v4 / Supabase
 > Last updated: 2026-08-07
 
@@ -72,9 +72,9 @@ Consume the flat schema above like the other 3 renderers. Keep the two-column vi
 - Make Duplicate actually clone store data with a `(copy)` title. Make Share copy a public share URL (Phase 1+ → generate via Supabase row).
 
 ### 3.4 Branding pass (small)
-- Replace "Logo" in `Navbar.jsx:35`, `Footer.jsx:17` with **CVForge** text logo.
+- Replace "Logo" in `Navbar.jsx:35`, `Footer.jsx:17` with **AchiVAI** text logo.
 - Replace "Lorem Ipsum" in `HoverResume.jsx:35`.
-- Footer right: `© {year} CVForge — All Rights Reserved` + a line: **"Made by Aman Nakoti"** (link to their site/GitHub).
+- Footer right: `© {year} AchiVAI — All Rights Reserved` + a line: **"Made by Aman17123"** (link to their GitHub).
 
 ---
 
@@ -214,13 +214,13 @@ create table usage_events (
 ## 8. Phase 4 — SEO, logo, polish (days 9–10)
 
 ### 8.1 SEO
-- `src/app/layout.js` → replace metadata: title **"CVForge — AI Resume Builder"**, real description, `metadataBase`, OpenGraph/Twitter, theme-color.
+- `src/app/layout.js` → replace metadata: title **"AchiVAI — AI Resume Builder"**, real description, `metadataBase`, OpenGraph/Twitter, theme-color.
 - Add `src/app/sitemap.ts`, `src/app/robots.ts`, `src/app/opengraph-image.png` (generated from logo).
 - Per-page metadata: `/template`, `/pricing`, `/login`, `/upload` via `generateMetadata` or static `metadata` export.
 - JSON-LD `SoftwareApplication` script in layout/landing for rich results.
 
 ### 8.2 Logo
-- `public/logo.svg` — simple "CV" monogram + wordmark **CVForge** (use in Navbar, Footer, favicon `src/app/icon.svg`, OpenGraph).
+- `public/logo.svg` — simple "A" monogram + wordmark **AchiVAI** (use in Navbar, Footer, favicon `src/app/icon.svg`, OpenGraph).
 
 ### 8.3 Footer
 - `Footer.jsx`: logo + tagline, quick links (Templates, Pricing, Login, Upload), © line, **"Developed by Aman Nakoti"**.

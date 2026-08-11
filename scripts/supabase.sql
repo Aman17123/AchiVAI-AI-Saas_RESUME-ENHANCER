@@ -1,5 +1,5 @@
 -- =====================================================
--- CVForge — Supabase schema (run in SQL Editor)
+-- AchiVAI — Supabase schema (run in SQL Editor)
 -- =====================================================
 
 -- Profiles (syncs with auth.users)
