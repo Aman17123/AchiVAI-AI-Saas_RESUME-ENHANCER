@@ -3,25 +3,23 @@
 import dynamic from "next/dynamic";
 import Navbar from "./_component/Navbar";
 import Hero from "./_component/Hero";
-import HeroResumeSection from "./_component/HeroResumeSection";
-import UploadSection from "./_component/Mid";
-import Footer from "./_component/Footer";
-import HoverResume from "./_component/HoverResume";
-import PlansSection from "./_component/PlansSection";
-import TestimonialsSection from "./_component/TestimonialsSection";
-import FAQSection from "./_component/FAQSection";
-import HowItWorksSection from "./_component/HowItWorksSection";
-import WhyAchiVAISection from "./_component/WhyAchiVAISection";
 import "./globals.css";
 
-// Dynamically import ResumeHighlight (client-side only)
-const ResumeHighlight = dynamic(() => import("./_component/ResumeHighlight"), {
-  ssr: false,
-});
+// Below-the-fold components dynamic imports (code-splitting)
+const HowItWorksSection = dynamic(() => import("./_component/HowItWorksSection"));
+const ResumeHighlight = dynamic(() => import("./_component/ResumeHighlight"), { ssr: false });
+const HeroResumeSection = dynamic(() => import("./_component/HeroResumeSection"));
+const UploadSection = dynamic(() => import("./_component/Mid"));
+const WhyAchiVAISection = dynamic(() => import("./_component/WhyAchiVAISection"));
+const PlansSection = dynamic(() => import("./_component/PlansSection"));
+const TestimonialsSection = dynamic(() => import("./_component/TestimonialsSection"));
+const HoverResume = dynamic(() => import("./_component/HoverResume"));
+const FAQSection = dynamic(() => import("./_component/FAQSection"));
+const Footer = dynamic(() => import("./_component/Footer"));
 
 export default function HomePage() {
   return (
-    <div className="">
+    <div>
       <Navbar />    
       <Hero />
       <HowItWorksSection />

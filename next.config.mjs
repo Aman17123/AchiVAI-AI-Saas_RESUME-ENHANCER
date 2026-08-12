@@ -17,7 +17,6 @@ const nextConfig = {
     ],
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 86400, // Cache for 1 day
-    unoptimized: true, // Disable optimization for external images
   },
   serverExternalPackages: ["pdf-parse", "pdfjs-dist"],
 };

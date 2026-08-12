@@ -115,7 +115,9 @@ export default function DashboardPage() {
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
           <div>
             <p className="text-[#021F81] font-semibold tracking-wide uppercase text-sm mb-1">
-              {user ? `Welcome, ${user.email?.split("@")[0] || "back"}` : "Welcome back"}
+              {user
+                ? `Welcome, ${user.email.split("@")[0] || "back"}`
+                : "Welcome back"}
             </p>
             <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">
               {resumes.length > 0
@@ -175,7 +177,11 @@ export default function DashboardPage() {
                 key={r.id}
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, delay: i * 0.05, ease: "easeOut" }}
+                transition={{
+                  duration: 0.35,
+                  delay: i * 0.05,
+                  ease: "easeOut",
+                }}
                 className="bg-white rounded-2xl border border-[#021F81]/10 p-6 flex flex-col justify-between shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
               >
                 <div>
