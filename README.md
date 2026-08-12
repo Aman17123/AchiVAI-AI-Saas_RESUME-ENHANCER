@@ -1,8 +1,8 @@
-﻿<div align="center">
+<div align="center">
 
 <img src="https://raw.githubusercontent.com/Aman17123/AchiVAI-AI-Saas_RESUME-ENHANCER/main/public/logo.svg" alt="AchiVAI Logo" width="200" />
 
-# ? AchiVAI � AI Resume Enhancer
+# 🚀 AchiVAI — AI Resume Enhancer
 
 **Beat the ATS. Get hired faster.**
 
@@ -18,15 +18,15 @@ An AI-powered SaaS that analyzes your resume against job descriptions, gives you
 
 <br/>
 
-> ?? **Live at:** [https://arcivai.vercel.app](https://arcivai.vercel.app)
+> 🌐 **Live at:** [https://arcivai.vercel.app](https://arcivai.vercel.app)
 
 </div>
 
 ---
 
-## ? Features
+## ✨ Features
 
-### ?? AI-Powered Resume Analysis
+### 🧠 AI-Powered Resume Analysis
 - Upload your resume as **PDF or DOCX**
 - Paste any job description to match against
 - Get an instant **ATS compatibility score out of 100**
@@ -34,27 +34,27 @@ An AI-powered SaaS that analyzes your resume against job descriptions, gives you
 - Receive **section-by-section feedback** (Summary, Skills, Experience, Education)
 - Powered by **Google Gemini 3.6 Flash**
 
-### ?? Resume Builder
+### 📝 Resume Builder
 - Build resumes from scratch using a structured form
 - Choose from **multiple ATS-friendly templates** (Classic, Modern)
 - Live preview of your resume as you type
-- **One-click PDF export** � print-ready and ATS-safe
+- **One-click PDF export** — print-ready and ATS-safe
 - Resumes auto-saved to your account
 
-### ?? Authentication
+### 🔐 Authentication
 - **Google OAuth** sign-in via Supabase
 - Email/password sign-up and login
 - Magic link (passwordless) login
 - Password reset via email
 - Session management with secure HTTP-only cookies
 
-### ?? Monetization
+### 💳 Monetization
 - **Free Plan**: 2 AI analyses per month, all templates, unlimited PDF downloads
-- **Premium Plan (?499 one-time)**: Unlimited AI analyses, all features, priority support
+- **Premium Plan (₹499 one-time)**: Unlimited AI analyses, all features, priority support
 - Seamless **Razorpay** payment integration with webhook verification
 - Per-user quota tracking with `usage_events` table
 
-### ? Performance & SEO
+### ⚡ Performance & SEO
 - Server-side rendering with Next.js App Router
 - Full **Schema.org structured data** (SoftwareApplication, FAQ, Organization)
 - Open Graph & Twitter Card metadata
@@ -63,7 +63,7 @@ An AI-powered SaaS that analyzes your resume against job descriptions, gives you
 
 ---
 
-## ??? Tech Stack
+## 🛠️ Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -80,68 +80,67 @@ An AI-powered SaaS that analyzes your resume against job descriptions, gives you
 
 ---
 
-## ?? Project Structure
+## 📁 Project Structure
 
 ```
 ai_resume/
-+-- public/
-�   +-- images/              # Static assets (bg, logos)
-�   +-- template-previews/   # Resume template preview images
-+-- scripts/
-�   +-- supabase.sql         # Full DB schema for Supabase
-+-- src/
-�   +-- app/
-�   �   +-- _component/      # Shared UI (Navbar, Footer, Hero, FAQ, Plans...)
-�   �   +-- analysis/        # AI analysis results page
-�   �   +-- api/
-�   �   �   +-- analyze-resume/   # Core AI analysis endpoint (POST)
-�   �   �   +-- razorpay/         # Payment routes (create-order, verify, webhook)
-�   �   �   +-- user/             # User plan API
-�   �   +-- auth/callback/   # Supabase OAuth callback handler
-�   �   +-- dashboard/       # User saved resumes dashboard
-�   �   +-- login/           # Auth page (Google, email, magic link)
-�   �   +-- pricing/         # Pricing page + Razorpay checkout
-�   �   +-- template/        # Resume builder (template list + [id] editor)
-�   �   +-- upload/          # Resume upload + AI analysis trigger
-�   +-- components/
-�   �   +-- Editor/          # ResumeForm � structured input form
-�   �   +-- PDFTemplates/    # PDF-specific template renderer
-�   �   +-- ResumeRenderers/ # Classic & Modern live preview templates
-�   +-- data/                # Universities dataset
-�   +-- lib/
-�   �   +-- fileParsers.js     # PDF/DOCX text extraction
-�   �   +-- prompt.js          # Gemini AI prompt builder
-�   �   +-- razorpayServer.js  # Razorpay server utils + quota config
-�   �   +-- resumeService.js   # Supabase resume CRUD operations
-�   �   +-- supabase.js        # Client-side Supabase client
-�   �   +-- supabaseAdmin.js   # Admin Supabase client (service role key)
-�   �   +-- supabaseServer.js  # Server-side Supabase client (SSR cookies)
-�   +-- middleware.js          # Edge auth guard + route protection
-�   +-- store/
-�   �   +-- resumeStore.js     # Zustand global state for resume data
-�   +-- templates/             # Resume JSON schemas (classic, modern)
-+-- next.config.mjs
-+-- package.json
+├── public/
+│   ├── images/              # Static assets (bg, logos)
+│   └── template-previews/   # Resume template preview images
+├── scripts/
+│   └── supabase.sql         # Full DB schema for Supabase
+├── src/
+│   ├── app/
+│   │   ├── _component/      # Shared UI (Navbar, Footer, Hero, FAQ, Plans...)
+│   │   ├── analysis/        # AI analysis results page
+│   │   ├── api/
+│   │   │   ├── analyze-resume/   # Core AI analysis endpoint (POST)
+│   │   │   ├── razorpay/         # Payment routes (create-order, verify, webhook)
+│   │   │   └── user/             # User plan API
+│   │   ├── auth/callback/   # Supabase OAuth callback handler
+│   │   ├── dashboard/       # User saved resumes dashboard
+│   │   ├── login/           # Auth page (Google, email, magic link)
+│   │   ├── pricing/         # Pricing page + Razorpay checkout
+│   │   └── template/        # Resume builder (template list + [id] editor)
+│   ├── components/
+│   │   ├── Editor/          # ResumeForm — structured input form
+│   │   ├── PDFTemplates/    # PDF-specific template renderer
+│   │   └── ResumeRenderers/ # Classic & Modern live preview templates
+│   ├── data/                # Universities dataset
+│   ├── lib/
+│   │   ├── fileParsers.js     # PDF/DOCX text extraction
+│   │   ├── prompt.js          # Gemini AI prompt builder
+│   │   ├── razorpayServer.js  # Razorpay server utils + quota config
+│   │   ├── resumeService.js   # Supabase resume CRUD operations
+│   │   ├── supabase.js        # Client-side Supabase client
+│   │   ├── supabaseAdmin.js   # Admin Supabase client (service role key)
+│   │   └── supabaseServer.js  # Server-side Supabase client (SSR cookies)
+│   ├── middleware.js          # Edge auth guard + route protection
+│   ├── store/
+│   │   └── resumeStore.js     # Zustand global state for resume data
+│   └── templates/             # Resume JSON schemas (classic, modern)
+├── next.config.mjs
+└── package.json
 ```
 
 ---
 
-## ??? Database Schema
+## 🗄️ Database Schema
 
 The full schema is in [`scripts/supabase.sql`](./scripts/supabase.sql). Run it once in your Supabase SQL Editor.
 
 | Table | Purpose |
 |---|---|
-| `profiles` | User profile � synced from `auth.users` via DB trigger on signup |
+| `profiles` | User profile — synced from `auth.users` via DB trigger on signup |
 | `resumes` | Stores resume JSON data with template name & unique share token |
 | `subscriptions` | Tracks user plan (`free` / `premium`) and Razorpay subscription ID |
 | `usage_events` | Per-user AI analysis count for enforcing the free monthly quota |
 
-All tables have **Row Level Security (RLS)** enabled � users can only read/write their own rows.
+All tables have **Row Level Security (RLS)** enabled — users can only read/write their own rows.
 
 ---
 
-## ?? Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 - Node.js 18+
@@ -168,30 +167,30 @@ npm install
 Create a `.env.local` file at the root:
 
 ```env
-# Supabase � Dashboard ? Project Settings ? API
+# Supabase — Dashboard → Project Settings → API
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
 
-# Google Gemini AI � https://ai.google.dev
+# Google Gemini AI — https://ai.google.dev
 GEMINI_API_KEY=your-gemini-api-key
 
-# Razorpay � https://dashboard.razorpay.com
+# Razorpay — https://dashboard.razorpay.com
 RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxx
 RAZORPAY_KEY_SECRET=your-razorpay-secret
 RAZORPAY_WEBHOOK_SECRET=your-razorpay-webhook-secret
 
-# App URL � use your live Vercel URL in production
+# App URL — use your live Vercel URL in production
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 ### 4. Set up the database
 
-1. Go to **Supabase Dashboard ? SQL Editor**
+1. Go to **Supabase Dashboard → SQL Editor**
 2. Paste the contents of [`scripts/supabase.sql`](./scripts/supabase.sql) and click **Run**
-3. Go to **Authentication ? Providers ? Google** and enable Google OAuth
+3. Go to **Authentication → Providers → Google** and enable Google OAuth
 4. Copy the **Callback URL** shown in Supabase
-5. In **Google Cloud Console ? Credentials ? OAuth 2.0 Client**, add it as an **Authorized Redirect URI**:
+5. In **Google Cloud Console → Credentials → OAuth 2.0 Client**, add it as an **Authorized Redirect URI**:
    ```
    https://your-project-id.supabase.co/auth/v1/callback
    ```
@@ -202,69 +201,69 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) ??
+Open [http://localhost:3000](http://localhost:3000) 🎉
 
 ---
 
-## ?? Deployment on Vercel
+## ☁️ Deployment on Vercel
 
 1. Push your code to GitHub
 2. Import your repository at [vercel.com](https://vercel.com)
-3. In **Vercel ? Project ? Settings ? Environment Variables**, add all variables from `.env.local`
+3. In **Vercel → Project → Settings → Environment Variables**, add all variables from `.env.local`
 4. Set `NEXT_PUBLIC_APP_URL` to your live Vercel URL (e.g., `https://arcivai.vercel.app`)
-5. Click **Deploy** ?
+5. Click **Deploy** 🚀
 
 ---
 
-## ?? How the AI Analysis Works
+## 🧩 How the AI Analysis Works
 
 ```
 User uploads Resume (PDF/DOCX)
-         �
-         ?
+         │
+         ▼
   fileParsers.js extracts raw text
-         �
-         ?
+         │
+         ▼
   prompt.js builds a structured Gemini prompt
   (resume text + optional job description)
-         �
-         ?
+         │
+         ▼
   Gemini 3.6 Flash returns structured JSON:
   { atsScore, matchedKeywords, missingKeywords,
     sectionsAnalyzed, feedback, suggestions, suggestedRole }
-         �
-         ?
+         │
+         ▼
   Results displayed on /analysis page
   (ATS score gauge, keyword chips, section breakdown)
 ```
 
 ---
 
-## ?? Pricing
+## 💰 Pricing
 
-| Feature | Free | Premium (?499 one-time) |
+| Feature | Free | Premium (₹499 one-time) |
 |---|:---:|:---:|
 | AI Resume Analyses | 2 / month | Unlimited |
 | ATS-Friendly Templates | All | All |
-| PDF Download | ? | ? |
-| Cloud Save | ? | ? |
-| Job Description Matching | ? | ? |
-| Priority Support | ? | ? |
-| Price | ?0 / forever | ?499 one-time |
+| PDF Download | ✅ | ✅ |
+| Cloud Save | ✅ | ✅ |
+| Job Description Matching | ✅ | ✅ |
+| Priority Support | ❌ | ✅ |
+| Price | ₹0 / forever | ₹499 one-time |
 
 ---
 
-## ?? Security
+## 🔒 Security
 
 - Protected routes (`/dashboard`, `/analysis`, `/template/[id]`) guarded by **server-side middleware**
-- **Row Level Security (RLS)** enforced at DB level � no accidental data leaks
+- **Row Level Security (RLS)** enforced at DB level — no accidental data leaks
 - Razorpay webhook payloads verified with **HMAC signature** before processing
-- `SUPABASE_SERVICE_ROLE_KEY` is **server-only** � never exposed to the browser
-- `.env.local` is gitignored � secrets are never committed
+- `SUPABASE_SERVICE_ROLE_KEY` is **server-only** — never exposed to the browser
+- `.env.local` is gitignored — secrets are never committed
 
 ---
 
-## ?? Contributing
+## 🤝 Contributing
 
 Pull requests are welcome! For major changes, please open an issue first.
 
@@ -276,7 +275,7 @@ Pull requests are welcome! For major changes, please open an issue first.
 
 ---
 
-## ????? Author
+## 👤 Author
 
 **Aman Nakoti**
 - GitHub: [@Aman17123](https://github.com/Aman17123)
@@ -284,13 +283,13 @@ Pull requests are welcome! For major changes, please open an issue first.
 
 ---
 
-## ?? License
+## 📄 License
 
 This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
 <div align="center">
-  <p>Made with ?? and a lot of Gemini API calls.</p>
-  <p>If this helped you, please ? star the repo!</p>
+  <p>Made with ❤️ and a lot of Gemini API calls.</p>
+  <p>If this helped you, please ⭐ star the repo!</p>
 </div>
