@@ -1,6 +1,5 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/Aman17123/AchiVAI-AI-Saas_RESUME-ENHANCER/main/public/logo.svg" alt="AchiVAI Logo" width="200" />
 
 # 🚀 AchiVAI — AI Resume Enhancer
 
