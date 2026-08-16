@@ -70,7 +70,7 @@ export async function middleware(request) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|template-previews|images|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|template-previews|images|google.*\\.html|.*\\.(?:html|svg|png|jpg|jpeg|gif|webp|ico)$).*)",
   ],
 };
 

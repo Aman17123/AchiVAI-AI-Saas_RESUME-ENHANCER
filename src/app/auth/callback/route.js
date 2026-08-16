@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
 export async function GET(request) {
@@ -20,36 +21,47 @@ export async function GET(request) {
   }
 
   if (code) {
-    const redirectUrl = new URL(next, request.url);
-    const response = NextResponse.redirect(redirectUrl);
+    try {
+      const cookieStore = await cookies();
+      const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+        {
+          cookies: {
+            getAll() {
+              return cookieStore.getAll();
+            },
+            setAll(cookiesToSet) {
+              try {
+                cookiesToSet.forEach(({ name, value, options }) => {
+                  cookieStore.set(name, value, options);
+                });
+              } catch (err) {
+                console.warn("[Auth Callback] Warning: Failed to set cookies in setAll:", err.message);
+              }
+            },
+          },
+        }
+      );
 
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      {
-        cookies: {
-          getAll() {
-            return request.cookies.getAll();
-          },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              response.cookies.set(name, value, options);
-            });
-          },
-        },
+      console.log("[Auth Callback] Exchanging code for session...");
+      const { error } = await supabase.auth.exchangeCodeForSession(code);
+      if (error) {
+        console.error("[Auth Callback] exchangeCodeForSession failed:", error.message);
+        return NextResponse.redirect(
+          new URL(`/login?error=${encodeURIComponent(error.message)}`, request.url)
+        );
       }
-    );
-
-    console.log("[Auth Callback] Exchanging code for session...");
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (error) {
-      console.error("[Auth Callback] exchangeCodeForSession failed:", error.message);
+      console.log("[Auth Callback] Session exchange successful! Redirecting to:", next);
+      
+      const redirectUrl = new URL(next, request.url);
+      return NextResponse.redirect(redirectUrl);
+    } catch (err) {
+      console.error("[Auth Callback] Unexpected error during exchange:", err);
       return NextResponse.redirect(
-        new URL(`/login?error=${encodeURIComponent(error.message)}`, request.url)
+        new URL(`/login?error=${encodeURIComponent(err.message || "unexpected_error")}`, request.url)
       );
     }
-    console.log("[Auth Callback] Session exchange successful! Redirecting to:", redirectUrl.toString());
-    return response;
   }
 
   console.log("[Auth Callback] No code provided. Redirecting to:", next);
