@@ -77,7 +77,7 @@ const cards = [
         >     
             <Image 
               src={img}
-              alt="Resume_template_preview"
+              alt={`${id.charAt(0).toUpperCase() + id.slice(1)} resume template preview — AchiVAI ATS-friendly`}
               width={300}
               height={400}
               className="object-cover rounded-b-xl"

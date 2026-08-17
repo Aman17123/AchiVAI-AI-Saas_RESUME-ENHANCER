@@ -61,19 +61,36 @@ keywords: [
     siteName: "AchiVAI",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "AchiVAI — AI Resume Builder: Beat the ATS and get hired faster",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "AchiVAI — AI Resume Builder",
     description:
       "Beat the ATS and get hired faster with AI-powered resume analysis.",
+    images: ["/opengraph-image"],
   },
   icons: {
     icon: "/icon.svg",
+    apple: "/icon.svg",
+    shortcut: "/icon.svg",
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 

@@ -25,7 +25,9 @@ function LoginForm() {
   );
   const [message, setMessage] = useState("");
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+  const appUrl =
+    process.env.NEXT_PUBLIC_APP_URL ||
+    (typeof window !== "undefined" ? window.location.origin : "");
 
   const handleGoogleLogin = async () => {
     setLoading(true);
@@ -181,7 +183,7 @@ function LoginForm() {
             <Image
               src="/images/logos/google.svg"
               alt="Google"
-              width={16}
+              width={36}
               height={16}
             />
           )}

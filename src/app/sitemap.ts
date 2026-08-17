@@ -5,17 +5,16 @@ export default async function sitemap() {
   const now = new Date();
 
   const routes = [
-    "",
-    "/template",
-    "/upload",
-    "/login",
-    "/dashboard",
-    "/analysis",
-  ].map((route) => ({
-    url: `${base}${route}`,
+    { path: "", freq: "weekly", priority: 1.0 },
+    { path: "/template", freq: "monthly", priority: 0.9 },
+    { path: "/pricing", freq: "monthly", priority: 0.9 },
+    { path: "/upload", freq: "weekly", priority: 0.7 },
+    { path: "/login", freq: "yearly", priority: 0.5 },
+  ].map(({ path, freq, priority }) => ({
+    url: `${base}${path}`,
     lastModified: now,
-    changeFrequency: route === "" || route === "/template" ? "monthly" : "daily",
-    priority: route === "" ? 1 : 0.8,
+    changeFrequency: freq,
+    priority,
   }));
 
   return routes;
