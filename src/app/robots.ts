@@ -1,8 +1,18 @@
 import { MetadataRoute } from "next";
+import { headers } from "next/headers";
 
-export default function robots(): MetadataRoute.Robots {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  const base = new URL(appUrl).origin;
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  let base: string;
+
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    base = new URL(process.env.NEXT_PUBLIC_APP_URL).origin;
+  } else {
+    // Auto-detect from request headers (works on Vercel without env var)
+    const headersList = await headers();
+    const host = headersList.get("host") ?? "";
+    const proto = host.startsWith("localhost") ? "http" : "https";
+    base = `${proto}://${host}`;
+  }
 
   return {
     rules: [
