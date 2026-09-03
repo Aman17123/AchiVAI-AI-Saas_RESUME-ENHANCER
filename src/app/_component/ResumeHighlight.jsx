@@ -103,11 +103,14 @@ export default function ResumeHighlight() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           viewport={{ once: true }}
-          className="text-3xl md:text-5xl font-semibold mt-10 text-center josefin-sans mb-16"
+          className="text-3xl md:text-5xl font-semibold mt-10 text-center josefin-sans mb-4"
         >
-          <span className="text-[#4da3ff] underline">Hover</span> the resume,
-          <br /> and watch it
+          <span className="text-[#4da3ff] underline">Inspect</span> Your Resume Through the Eyes of an ATS
         </motion.h2>
+
+        <p className="text-gray-400 text-sm sm:text-base max-w-xl text-center mb-14 leading-relaxed">
+          Recruiters spend an average of 6 seconds reviewing a resume, and ATS algorithms spend less than one. See how AchiVAI structures your skills, experience, and role metrics for zero parsing errors.
+        </p>
 
         <div className="relative flex justify-center items-center mt-10">
           {/* ===== Flip Card with Zoom Effect ===== */}
@@ -165,7 +168,7 @@ export default function ResumeHighlight() {
               transition={{ type: "spring", stiffness: 250, damping: 10 }}
               className="text-xl z-10 text-gray-100 -mr-5 josefin-sans whitespace-nowrap mb-28 cursor-none  select-none"
             >
-              Creative Direction
+              Keyword Optimization
             </motion.p>
             <svg
               className="relative z-0 pointer-events-none"
@@ -205,9 +208,9 @@ export default function ResumeHighlight() {
               onHoverEnd={handlePointHoverEnd}
               whileHover={{ scale: 1.25, color: "#4da3ff" }}
               transition={{ type: "spring", stiffness: 250, damping: 10 }}
-              className="text-xl z-10 font-medium text-gray-100 mb-14  josefin-sans whitespace-nowrap text-right -ml-2 cursor-none select-none"
+              className="text-xl z-10 font-medium text-gray-100 mb-14 josefin-sans whitespace-nowrap text-right -ml-2 cursor-none select-none"
             >
-              UI/UX Design
+              Quantified Achievements
             </motion.p>
           </div>
 
@@ -219,7 +222,7 @@ export default function ResumeHighlight() {
               transition={{ type: "spring", stiffness: 250, damping: 10 }}
               className="text-xl josefin-sans mb-30 text-gray-100 whitespace-nowrap cursor-none select-none"
             >
-              Development
+              Parser-Safe Structure
             </motion.p>
             <svg
               width="280"
@@ -261,7 +264,7 @@ export default function ResumeHighlight() {
               transition={{ type: "spring", stiffness: 250, damping: 10 }}
               className="text-xl z-10 font-medium text-gray-100 mb-10 josefin-sans whitespace-nowrap text-right -ml-2 cursor-none select-none"
             >
-              Brand Identity
+              Role-Specific Tailoring
             </motion.p>
           </div>
         </div>
@@ -269,10 +272,10 @@ export default function ResumeHighlight() {
         {/* ===== Mobile Points ===== */}
         <div className="flex flex-col items-center justify-center gap-3 mt-10 md:hidden">
           {[
-            "🎨 Creative Direction",
-            "💡 UI/UX Design",
-            "💻 Development",
-            "🏷️ Brand Identity",
+            "🎯 95% Keyword Match Rate",
+            "💼 Action-Driven Experience Bullets",
+            "📄 Single & Multi-Column Parser-Safe Layouts",
+            "🚀 Role-Specific Tailoring with AI",
           ].map((point, i) => (
             <motion.div
               key={i}
@@ -293,8 +296,7 @@ export default function ResumeHighlight() {
           viewport={{ once: true }}
           className="text-gray-400 mt-16 text-sm max-w-md mx-auto text-center"
         >
-          Hover on points or resume to trigger a jumpy flip and smooth zoom
-          animation.
+          Interactive ATS inspection: Hover over any evaluation point or the resume to see live template adaptation.
         </motion.p>
       </div>
     </section>

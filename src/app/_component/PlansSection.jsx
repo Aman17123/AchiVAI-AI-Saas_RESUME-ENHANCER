@@ -2,40 +2,43 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Check } from "lucide-react";
+import { Check, Sparkles, Shield, Zap } from "lucide-react";
 import { createClient } from "../../lib/supabase";
 
 const plans = [
   {
-    name: "Free",
+    name: "Free Forever",
     price: "₹0",
     period: "/ forever",
-    tagline: "For trying AchiVAI out",
+    tagline: "Essential ATS screening for every job seeker",
     features: [
-      "2 AI resume analyses / month",
-      "All 4 ATS-friendly templates",
-      "Unlimited resume editing",
-      "PDF download",
-      "Save to your account",
+      "2 AI resume audits & keyword scans / month",
+      "Real-time 0–100 ATS compatibility score",
+      "Full access to Classic ATS & Modern templates",
+      "Unlimited real-time resume editing & preview",
+      "Clean vector PDF downloads",
+      "Cloud saves to your private account",
     ],
-    cta: "Start Free",
+    cta: "Start Free Now",
     href: "/template",
     highlight: false,
   },
   {
-    name: "Premium",
+    name: "Premium Lifetime",
     price: "₹499",
     period: "/ one-time",
-    tagline: "For serious job hunters",
+    tagline: "Uncapped AI power for ambitious career moves",
     features: [
-      "Unlimited AI resume analyses",
-      "Job description keyword matching",
-      "All 4 ATS-friendly templates",
-      "Unlimited PDF downloads",
-      "Unlimited cloud saves",
-      "Priority support",
+      "Unlimited AI resume audits & deep scans",
+      "Exact job-description keyword gap matching",
+      "AI action-verb rewrites & impact metric suggestions",
+      "All ATS-certified templates with custom styling",
+      "Unlimited high-resolution PDF exports",
+      "Unlimited cloud saves & multiple resume versions",
+      "Priority customer & technical support",
+      "Zero recurring fees — lifetime access",
     ],
-    cta: "Go Premium",
+    cta: "Unlock Premium Access",
     href: "/pricing",
     highlight: true,
   },
@@ -50,7 +53,6 @@ export default function PlansSection() {
       data: { user },
     } = await supabase.auth.getUser();
 
-    // Check current plan; signed-in + already premium users can go straight to /pricing
     if (user) {
       router.push("/pricing");
     } else {
@@ -59,112 +61,130 @@ export default function PlansSection() {
   };
 
   return (
-    <section className="relative josefin-sans w-full py-24 px-6 overflow-hidden">
-      {/* Soft glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[650px] h-[300px] bg-[#021F81]/5 blur-[120px] rounded-full" />
-
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        viewport={{ once: true }}
-        className="text-center max-w-2xl mx-auto"
-      >
-        <p className="text-[#021F81] font-semibold tracking-wide uppercase text-sm mb-3">
-          Pricing
-        </p>
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-gray-900 tracking-tight">
-          Start free. Upgrade when you&apos;re <span className="underline decoration-[#021F81]/30">serious.</span>
-        </h2>
-        <p className="text-gray-600 mt-4 text-base sm:text-lg">
-          Every plan includes every template. Upgrade only if you want unlimited
-          AI analysis.
-        </p>
-      </motion.div>
-
-      <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mt-14">
-        {plans.map((plan, i) => (
-          <motion.div
-            key={plan.name}
-            initial={{ opacity: 0, y: 40 }}
+    <section className="josefin-sans w-full py-24 px-6 bg-[#F6F8FF] border-t border-[#021F81]/10">
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.15, duration: 0.7, ease: "easeOut" }}
-            whileHover={{ y: -6 }}
-            className={`relative rounded-3xl p-8 flex flex-col ${
-              plan.highlight
-                ? "bg-[#021F81] text-white shadow-2xl scale-[1.02] md:scale-105"
-                : "bg-white border border-gray-200 shadow-sm"
-            }`}
+            className="text-[#021F81] font-semibold tracking-wide uppercase text-sm mb-3"
           >
-            {plan.highlight && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-400 text-amber-900 text-xs font-bold px-4 py-1 rounded-full">
-                MOST POPULAR
-              </span>
-            )}
+            Transparent, Honest Pricing
+          </motion.p>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl sm:text-4xl md:text-5xl font-semibold text-gray-900 tracking-tight"
+          >
+            Simple Plans to Accelerate Your Career
+          </motion.h2>
+          <p className="text-gray-600 mt-4 text-base sm:text-lg">
+            No sneaky subscriptions. No surprise renewals. Test your resume for free or unlock lifetime unlimited AI analyses with a single one-time payment.
+          </p>
+        </div>
 
-            <h3
-              className={`text-xl font-semibold ${
-                plan.highlight ? "text-white" : "text-gray-900"
+        <div className="grid md:grid-cols-2 gap-8 items-stretch">
+          {plans.map((plan, i) => (
+            <motion.div
+              key={plan.name}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: i * 0.15 }}
+              className={`relative rounded-3xl p-8 sm:p-10 flex flex-col justify-between transition-all ${
+                plan.highlight
+                  ? "bg-gradient-to-b from-[#021F81] to-[#011452] text-white shadow-xl ring-2 ring-[#021F81]"
+                  : "bg-white text-gray-900 border border-[#021F81]/15 shadow-sm"
               }`}
             >
-              {plan.name}
-            </h3>
-            <p
-              className={`text-sm mt-1 ${
-                plan.highlight ? "text-white/70" : "text-gray-500"
-              }`}
-            >
-              {plan.tagline}
-            </p>
+              {plan.highlight && (
+                <div className="absolute -top-3.5 right-8 bg-gradient-to-r from-amber-400 to-orange-400 text-slate-950 text-xs font-bold px-3.5 py-1 rounded-full shadow-md flex items-center gap-1">
+                  <Sparkles className="h-3 w-3" />
+                  <span>MOST POPULAR</span>
+                </div>
+              )}
 
-            <p className="mt-6 text-4xl font-bold">
-              {plan.price}
-              <span
-                className={`text-sm font-normal ${
-                  plan.highlight ? "text-white/60" : "text-gray-500"
-                }`}
-              >
-                {plan.period}
-              </span>
-            </p>
+              <div>
+                <h3 className="text-2xl font-bold tracking-tight mb-1">
+                  {plan.name}
+                </h3>
+                <p
+                  className={`text-sm mb-6 ${
+                    plan.highlight ? "text-blue-200" : "text-gray-500"
+                  }`}
+                >
+                  {plan.tagline}
+                </p>
 
-            <ul className="mt-8 space-y-3 text-sm flex-1">
-              {plan.features.map((f) => (
-                <li key={f} className="flex items-start gap-2.5">
+                <div className="flex items-baseline gap-1.5 mb-8">
+                  <span className="text-4xl sm:text-5xl font-bold tracking-tight">
+                    {plan.price}
+                  </span>
                   <span
-                    className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      plan.highlight
-                        ? "bg-white/15 text-amber-300"
-                        : "bg-green-100 text-green-600"
+                    className={`text-sm ${
+                      plan.highlight ? "text-blue-200" : "text-gray-500"
                     }`}
                   >
-                    <Check className="h-3 w-3" strokeWidth={3} />
+                    {plan.period}
                   </span>
-                  <span className={plan.highlight ? "text-white/90" : "text-gray-600"}>
-                    {f}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                </div>
 
-            {plan.highlight ? (
-              <button
-                onClick={handlePremium}
-                className="mt-8 text-center px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer bg-white text-[#021F81] hover:bg-amber-300 hover:-translate-y-0.5"
-              >
-                {plan.cta}
-              </button>
-            ) : (
-              <Link
-                href={plan.href}
-                className="mt-8 text-center px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer border-2 border-[#021F81] text-[#021F81] hover:bg-[#021F81] hover:text-white hover:-translate-y-0.5"
-              >
-                {plan.cta}
-              </Link>
-            )}
-          </motion.div>
-        ))}
+                <div className="space-y-3.5 mb-10">
+                  {plan.features.map((f, idx) => (
+                    <div key={idx} className="flex items-start gap-3">
+                      <span
+                        className={`inline-flex items-center justify-center w-5 h-5 rounded-full shrink-0 mt-0.5 ${
+                          plan.highlight
+                            ? "bg-blue-400/20 text-blue-300"
+                            : "bg-green-100 text-green-700"
+                        }`}
+                      >
+                        <Check className="h-3.5 w-3.5" />
+                      </span>
+                      <span
+                        className={`text-sm leading-relaxed ${
+                          plan.highlight ? "text-slate-200" : "text-gray-700"
+                        }`}
+                      >
+                        {f}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {plan.highlight ? (
+                <button
+                  onClick={handlePremium}
+                  className="w-full py-4 px-6 rounded-xl font-bold text-sm sm:text-base bg-white text-[#021F81] hover:bg-gray-100 transition-all shadow-md cursor-pointer text-center"
+                >
+                  {plan.cta}
+                </button>
+              ) : (
+                <Link
+                  href={plan.href}
+                  className="w-full py-4 px-6 rounded-xl font-bold text-sm sm:text-base bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-sm text-center"
+                >
+                  {plan.cta}
+                </Link>
+              )}
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Reassurance badge */}
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-xs sm:text-sm text-gray-500 font-medium text-center">
+          <span className="inline-flex items-center gap-1.5">
+            <Shield className="h-4 w-4 text-green-600" />
+            Secured by Razorpay (Cards, UPI, Net Banking)
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Zap className="h-4 w-4 text-amber-500" />
+            Instant Activation & Zero Subscription Lock-in
+          </span>
+        </div>
       </div>
     </section>
   );

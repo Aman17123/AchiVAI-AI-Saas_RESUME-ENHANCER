@@ -1,5 +1,7 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Sparkles } from "lucide-react";
 import "../globals.css";
 
 export default function HoverResume() {
@@ -10,9 +12,9 @@ export default function HoverResume() {
   ];
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+    <section className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden py-24 bg-[#F8FAFF]">
       {/* Top SVG Line */}
-      <div className="absolute top-6 left-0 w-full flex justify-start">
+      <div className="absolute top-6 left-0 w-full flex justify-start opacity-70 pointer-events-none">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="539"
@@ -30,57 +32,73 @@ export default function HoverResume() {
       </div>
 
       {/* Main Section */}
-      <div className="text-center josefin-sans max-w-4xl mt-20">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
-          Build a Resume That Gets You Hired
-        </h1>
-        <p className="text-gray-700 mb-12 leading-relaxed">
-          This is where the magic happens: our AI instantly analyzes your
-          document, fixing common errors, optimizing keywords for ATS systems,
+      <div className="text-center josefin-sans max-w-4xl mt-12 px-6">
+        <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-semibold mb-4">
+          <Sparkles className="h-3.5 w-3.5" />
+          <span>Recruiter-Approved Resume Architecture</span>
+        </div>
+
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
+          Build a Resume That Recruiter Algorithms Love
+        </h2>
+        
+        <p className="text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed text-sm sm:text-base">
+          AchiVAI structures your credentials into clean visual hierarchies, balancing machine-readable ATS compliance with eye-catching clarity that captivates hiring managers in the first 6 seconds.
         </p>
 
         {/* Cards with Dividers */}
-        <div className="flex justify-center items-center gap-8">
+        <div className="flex flex-col md:flex-row justify-center items-center gap-6 md:gap-8">
           {/* Left Card */}
-          <div className="group rounded-2xl shadow-md overflow-hidden w-[340px] h-[370px] transform transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-xl aspect=[3/4]">
+          <div className="group rounded-2xl shadow-md overflow-hidden w-[280px] sm:w-[320px] h-[370px] transform transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-xl bg-white border border-gray-200">
             <Image
               src={cvImages[0]}
-              alt="Left CV"
-              width={300}
+              alt="Single Column ATS Resume Example"
+              width={320}
               height={370}
               className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-[1.02]"
             />
           </div>
 
           {/* Divider */}
-          <div className="w-[4px] h-[280px] bg-black rounded-full"></div>
+          <div className="hidden md:block w-[3px] h-[280px] bg-slate-300 rounded-full"></div>
 
           {/* Middle Card */}
-          <div className="group bg-white rounded-2xl shadow-md overflow-hidden w-[420px] h-[450px] transform transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl">
+          <div className="group bg-white rounded-2xl shadow-xl overflow-hidden w-[300px] sm:w-[360px] h-[430px] transform transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl border-2 border-[#021F81]/20">
             <Image
               src={cvImages[1]}
-              alt="Middle CV"
-              width={380}
-              height={450}
+              alt="High-Impact Professional Resume Layout"
+              width={360}
+              height={430}
               className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-[1.03]"
             />
           </div>
 
           {/* Divider */}
-          <div className="w-[4px] h-[280px] bg-black rounded-full"></div>
+          <div className="hidden md:block w-[3px] h-[280px] bg-slate-300 rounded-full"></div>
 
           {/* Right Card */}
-          <div className="group bg-white rounded-2xl shadow-md overflow-hidden w-[340px] h-[370px] transform transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-xl aspect=[3/4]">
+          <div className="group bg-white rounded-2xl shadow-md overflow-hidden w-[280px] sm:w-[320px] h-[370px] transform transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-xl border border-gray-200">
             <Image
               src={cvImages[2]}
-              alt="Right CV"
-              width={300}
+              alt="Modern Clean Tech Resume Format"
+              width={320}
               height={370}
               className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-[1.02]"
             />
           </div>
         </div>
+
+        {/* CTA Button below gallery */}
+        <div className="mt-12 flex justify-center">
+          <Link
+            href="/template"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#021F81] text-white rounded-xl font-semibold text-sm sm:text-base hover:bg-[#031a66] transition-all shadow-md hover:shadow-lg"
+          >
+            <span>Explore All ATS Templates</span>
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </div>
-    </main>
+    </section>
   );
 }

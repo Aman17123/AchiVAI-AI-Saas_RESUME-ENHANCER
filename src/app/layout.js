@@ -29,23 +29,23 @@ export const metadata = {
   description:
     "AchiVAI is an AI-powered resume builder that scans your resume, checks it against the job description, and helps you beat the ATS to get hired faster.",
   applicationName: "AchiVAI",
-keywords: [
+  keywords: [
     "AI resume builder",
     "ATS resume checker",
-    "free resume template",
+    "free ATS resume template",
     "resume optimizer",
-    "job application helper",
-    "resume keyword matching",
+    "job description resume tailoring",
     "ATS score resume",
     "AI resume analyzer",
+    "beat the ATS",
+    "Workday resume checker",
+    "Greenhouse resume scanner",
+    "Lever ATS resume format",
+    "resume keyword matcher",
     "resume for freshers",
-    "Gemini resume analysis",
-    "resume builder India",
-    "free resume builder",
-    "resume feedback AI",
-    "job description resume tailoring",
-    "ATS friendly resume template",
-    "resume PDF export",
+    "tech resume builder",
+    "free vector resume PDF export",
+    "Gemini resume feedback",
     "AchiVAI",
   ],
   authors: [{ name: "Aman Nakoti" }],
@@ -100,20 +100,28 @@ export const viewport = {
 
 const faqStructuredData = [
   {
-    q: "What is an ATS and why does it matter?",
-    a: "An Applicant Tracking System (ATS) is software recruiters use to scan resumes before a human sees them. AchiVAI tailors your resume to clear the ATS scan and reach a real person.",
+    q: "What is an Applicant Tracking System (ATS) and why does it matter?",
+    a: "An Applicant Tracking System (ATS) is software used by over 98% of Fortune 500 companies to automatically screen, score, and filter resumes before human recruiters review them. AchiVAI structures your resume and matches essential keywords so you pass automated screens.",
   },
   {
-    q: "How does the AI analyze my resume?",
-    a: "Upload a PDF or DOCX and optionally paste the job description. AchiVAI reads your resume, scores it out of 100, lists matched and missing keywords, and gives section-by-section feedback.",
+    q: "How does AchiVAI analyze and score my resume?",
+    a: "Upload your resume in PDF or DOCX format and paste target job descriptions. AchiVAI evaluates keyword match rate, action verbs, formatting, and structural completeness to generate a 0–100 ATS readiness score with actionable rewrites.",
   },
   {
-    q: "Is AchiVAI free?",
-    a: "Yes. The Free plan includes 2 AI analyses per month plus unlimited resume building and PDF export. Premium is a one-time upgrade with unlimited analyses.",
+    q: "What makes AchiVAI different from Canva or generic resume builders?",
+    a: "Design tools often use complex tables, graphics, and floating text boxes that break automated ATS parsers. AchiVAI templates are strictly built with semantic hierarchy and parser-tested fonts to guarantee 100% readability.",
   },
   {
-    q: "Can I download my resume as a PDF?",
-    a: "Yes. Every AchiVAI template exports to a clean, ATS-friendly, print-ready PDF in one click, on the Free plan and Premium alike.",
+    q: "Which ATS software platforms is AchiVAI compatible with?",
+    a: "AchiVAI is engineered and tested against all major corporate ATS platforms, including Greenhouse, Workday, Lever, Oracle Taleo, iCIMS, SAP SuccessFactors, SmartRecruiters, and BambooHR.",
+  },
+  {
+    q: "Can I download my resume as an ATS-safe PDF?",
+    a: "Yes. Every template exports to a clean, ATS-friendly, print-ready vector PDF in one click, on the Free plan and Premium alike.",
+  },
+  {
+    q: "Is AchiVAI free to use?",
+    a: "Yes. The Free plan includes 2 AI resume audits per month plus unlimited resume building and vector PDF downloads. Premium is an optional one-time ₹499 upgrade for lifetime unlimited analyses.",
   },
 ];
 
