@@ -1,34 +1,109 @@
 {
-  "name": "",
-  "title": "",
-  "email": "",
-  "phone": "",
-  "location": "",
-  "summary": "",
+  "name": "Alex Morgan",
+  "title": "Senior Full Stack Software Engineer",
+  "email": "alex.morgan@email.com",
+  "phone": "+1 (555) 234-5678",
+  "location": "San Francisco, CA, USA",
+  "websiteOrGithub": "https://github.com/alexmorgan",
+  "linkedin": "https://linkedin.com/in/alexmorgan",
+  "summary": "Results-driven Software Engineer with 6+ years of experience architecting and delivering high-performance web applications and distributed cloud systems. Proven track record in leading engineering teams, optimizing database queries by 40%, and enhancing end-user performance for products serving millions of active users.",
   "experience": [
     {
-      "title": "",
-      "company": "",
-      "startDate": "",
-      "endDate": "",
-      "description": "",
-      "keyAchievements": []
+      "id": "exp-1",
+      "title": "Senior Software Engineer",
+      "company": "Nexus Cloud Technologies",
+      "location": "San Francisco, CA",
+      "startDate": "2022-03",
+      "endDate": "Present",
+      "description": "Led a cross-functional team of 8 engineers building enterprise microservices using Node.js, TypeScript, and AWS.\nArchitected event-driven data pipelines processing over 25M daily transactions with 99.99% service uptime.\nReduced average API latency from 320ms to 85ms by introducing Redis caching and SQL query optimizations."
+    },
+    {
+      "id": "exp-2",
+      "title": "Full Stack Developer",
+      "company": "Aura Interactive Labs",
+      "location": "Austin, TX",
+      "startDate": "2019-06",
+      "endDate": "2022-02",
+      "description": "Developed dynamic frontend features using React, Next.js, and Tailwind CSS, increasing user session duration by 28%.\nCollaborated with UI/UX designers and product managers to redesign customer onboarding flows.\nAutomated CI/CD deployment pipelines using GitHub Actions and Docker, reducing release cycles by 50%."
     }
   ],
   "education": [
     {
-      "institution": "",
-      "degree": "",
-      "school": "",
-      "year": "",
-      "description": ""
+      "id": "edu-1",
+      "institution": "University of California, Berkeley",
+      "degree": "Bachelor of Science",
+      "fieldOfStudy": "Computer Science",
+      "location": "Berkeley, CA",
+      "startDate": "2015-09",
+      "endDate": "2019-05",
+      "cgpa": "3.85",
+      "description": "Dean's Honor List (4 semesters), President of Association for Computing Machinery (ACM) Student Chapter."
     }
   ],
-   "skills": [
+  "skills": [
     {
-      "skillName": "",
-      "description": ""
+      "id": "skl-1",
+      "skillName": "Frontend Development",
+      "description": "React, Next.js, TypeScript, Tailwind CSS, Redux Toolkit, Webpack, Responsive Design"
+    },
+    {
+      "id": "skl-2",
+      "skillName": "Backend & Cloud",
+      "description": "Node.js, Express, Python, PostgreSQL, Redis, GraphQL, REST APIs, AWS (Lambda, S3, RDS), Docker"
+    },
+    {
+      "id": "skl-3",
+      "skillName": "DevOps & Engineering Practices",
+      "description": "CI/CD (GitHub Actions), Microservices Architecture, Unit & E2E Testing (Jest, Playwright), Agile/Scrum"
     }
-   ],
-  "languages": ["", "", ""]
+  ],
+  "projects": [
+    {
+      "id": "proj-1",
+      "projectName": "PulseMetrics - Realtime Analytics Platform",
+      "technologies": "Next.js, TypeScript, PostgreSQL, Prisma, Apache Kafka",
+      "startDate": "2023-01",
+      "endDate": "2023-08",
+      "projectUrl": "https://github.com/alexmorgan/pulsemetrics",
+      "description": "Designed a real-time event analytics dashboard handling 10,000+ telemetry events per second with live charts and automated alert webhooks."
+    },
+    {
+      "id": "proj-2",
+      "projectName": "TaskFlow - Collaborative Workflow Suite",
+      "technologies": "React, Node.js, WebSockets, Tailwind CSS, Redis",
+      "startDate": "2022-04",
+      "endDate": "2022-10",
+      "projectUrl": "https://github.com/alexmorgan/taskflow",
+      "description": "Built a multiplayer project management board with live cursor sync, drag-and-drop task workflows, and Slack bot integrations."
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang-1",
+      "language": "English",
+      "proficiency": "Native / Bilingual"
+    },
+    {
+      "id": "lang-2",
+      "language": "Spanish",
+      "proficiency": "Professional Working"
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert-1",
+      "certificationName": "AWS Certified Solutions Architect – Associate",
+      "issuer": "Amazon Web Services (AWS)",
+      "date": "2023-05",
+      "credentialId": "AWS-PSA-89472",
+      "credentialUrl": "https://aws.amazon.com/verification"
+    }
+  ],
+  "customSections": [
+    {
+      "id": "cust-1",
+      "sectionName": "Leadership & Awards",
+      "content": "Tech Lead Excellence Award (Nexus Cloud Technologies, 2024)\nSpeaker at NodeConf Global 2023 on 'Scaling High-Throughput Node.js Microservices'\nOpen source contributor to React ecosystem libraries with 2,000+ GitHub stars."
+    }
+  ]
 }

@@ -16,7 +16,7 @@ import {
   Save, Maximize, Minimize, Type, Settings,
   ZoomIn, ZoomOut, File, Layers, CheckCircle, Info,
   Code, User, Briefcase, GraduationCap, Award, MessageSquare,
-  Star, Plus, Menu
+  Star, Plus, Menu, Edit3
 } from "lucide-react";
 
 
@@ -59,8 +59,11 @@ export default function EditorPage() {
           email: "",
           phone: "",
           location: "",
+          country: "",
+          state: "",
+          city: "",
           summary: "",
-          website: "",
+          websiteOrGithub: "",
           linkedin: "",
           experience: [],
           education: [],
@@ -125,7 +128,11 @@ export default function EditorPage() {
           }
 
           setFullData(templateJSON);
-          setTemplateName(templateJSON.name || "Untitled Resume");
+          setTemplateName(
+            templateJSON.name
+              ? `${templateJSON.name}'s Resume`
+              : (templateId === "modern" ? "Modern Resume" : "Classic Resume")
+          );
 
         // Correct mapping for all templates
         if (templateId.includes("modern")) {
@@ -287,7 +294,16 @@ export default function EditorPage() {
                 <FileText className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-slate-900">{templateName}</h1>
+                <div className="flex items-center gap-1.5 group">
+                  <input
+                    type="text"
+                    value={templateName}
+                    onChange={(e) => setTemplateName(e.target.value)}
+                    placeholder="Untitled Resume"
+                    className="text-base md:text-lg font-bold text-slate-900 bg-transparent border-b border-transparent hover:border-slate-300 focus:border-blue-500 focus:outline-none px-1 -ml-1 transition-colors max-w-[200px] sm:max-w-[320px] truncate"
+                  />
+                  <Edit3 className="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-600 transition-colors pointer-events-none" />
+                </div>
                 <p className="text-xs text-slate-500">Professional Resume Builder</p>
               </div>
             </div>
@@ -401,7 +417,7 @@ export default function EditorPage() {
 
                 <div className="flex-1 overflow-y-auto custom-scrollbar">
                   <div className="p-5">
-                    <ResumeForm activeSection={activeSection} />
+                    <ResumeForm activeSection={activeSection} selectedTemplate={templateLayout} />
                   </div>
                 </div>
               </div>
@@ -474,34 +490,33 @@ export default function EditorPage() {
 
                 {/* Preview Body */}
                 <div
-                  className={`flex-1 p-5 flex items-center justify-center ${
+                  className={`flex-1 p-5 flex items-center justify-center overflow-auto ${
                     isFullscreen ? "fixed inset-0 z-50 bg-white" : ""
                   }`}
                 >
                   <div
-                    className={`relative ${
+                    className={`relative my-auto transition-transform ${
                       previewMode === "mobile" ? "w-80" : "w-full max-w-2xl"
                     }`}
                     style={{
                       transform: `scale(${zoomLevel / 100})`,
-                      transformOrigin: "center",
+                      transformOrigin: "top center",
                     }}
                   >
                     {/* Shadow frame */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-slate-200 to-slate-300 rounded-xl shadow-lg blur-sm opacity-30"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-slate-300 to-slate-400 rounded-xl shadow-2xl blur-sm opacity-40"></div>
 
                     {/* Document */}
                     <div
-                      className="relative bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden"
-                      style={{ aspectRatio: "210/297" }}
+                      className="relative bg-white border border-slate-300 rounded-xl shadow-xl overflow-hidden"
                     >
-                      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 h-2"></div>
+                      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 h-1.5"></div>
 
-                      <div className="p-8 bg-white h-full overflow-auto">
+                      <div className="bg-white overflow-hidden">
                         <TemplateComponent data={data} theme={theme} />
                       </div>
 
-                      <div className="px-8 py-4 bg-slate-50 border-t border-slate-200 text-center text-xs text-slate-500 flex items-center justify-between">
+                      <div className="px-6 py-3 bg-slate-50 border-t border-slate-200 text-center text-xs text-slate-500 flex items-center justify-between">
                         <div>Created with AchiVAI</div>
                         <div>Last saved: {new Date().toLocaleDateString()}</div>
                       </div>

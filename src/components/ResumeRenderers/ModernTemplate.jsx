@@ -8,6 +8,7 @@ export default function ModernTemplate({ data }) {
     title = "",
     email = "",
     phone = "",
+    location = "",
     linkedin = "",
     websiteOrGithub = "",
     summary = "",
@@ -17,247 +18,321 @@ export default function ModernTemplate({ data }) {
     languages = [],
     projects = [],
     certifications = [],
+    customSections = [],
   } = data || {};
 
-  const contact = [
-    email,
-    phone,
-    linkedin,
-    websiteOrGithub,
-  ].filter(Boolean).join(" | ");
+  // Extract initials for modern badge
+  const initials = name
+    ? name
+        .split(" ")
+        .filter(Boolean)
+        .map((n) => n[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase()
+    : "CV";
 
-  const summaryArray = Array.isArray(summary)
-    ? summary
-    : typeof summary === "string"
-      ? summary.split(/\n+/).filter((p) => p.trim())
-      : [];
-
-  const skillNames = skills
-    .map((s) => (typeof s === "string" ? s : s?.skillName || s?.name || ""))
+  // Normalize skills
+  const normalizedSkills = (skills || [])
+    .map((s) => {
+      if (!s) return null;
+      if (typeof s === "string") return s.trim();
+      return s.skillName || s.name || s.value || "";
+    })
     .filter(Boolean);
 
-  const languageList = languages
-    .map((l) =>
-      typeof l === "string"
-        ? l
-        : [l?.language, l?.proficiency].filter(Boolean).join(" — ")
-    )
+  // Normalize languages
+  const languageList = (languages || [])
+    .map((l) => {
+      if (!l) return null;
+      if (typeof l === "string") return l.trim();
+      return [l.language || l.name, l.proficiency].filter(Boolean).join(" — ");
+    })
     .filter(Boolean);
+
+  const contactList = [
+    location && { icon: "📍", text: location },
+    phone && { icon: "📞", text: phone },
+    email && { icon: "✉️", text: email },
+    websiteOrGithub && { icon: "🌐", text: formatUrlDisplay(websiteOrGithub) },
+    linkedin && { icon: "💼", text: formatUrlDisplay(linkedin) },
+  ].filter(Boolean);
 
   return (
-    <div className="w-full min-h-screen flex font-sans text-slate-700">
-      {/* LEFT SIDEBAR */}
-      <div className="w-[33%] bg-slate-100 px-10 py-12 flex flex-col">
+    <div className="w-full flex font-sans text-slate-800 bg-white min-h-[297mm] shadow-sm">
+      {/* ==================== LEFT SIDEBAR ==================== */}
+      <div className="w-[34%] bg-slate-900 text-slate-100 p-6 flex flex-col justify-between">
+        <div>
+          {/* Avatar Initials Badge */}
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mx-auto flex items-center justify-center text-2xl font-bold text-white shadow-md mb-4 tracking-wider">
+            {initials}
+          </div>
 
-        {/* Profile Image Placeholder */}
-        <div className="w-40 h-40 bg-slate-300 rounded-full mx-auto flex items-center justify-center text-sm text-slate-600">
-          Upload Photo
-        </div>
+          {/* Name & Title */}
+          <h1 className="text-xl font-bold text-center text-white tracking-tight leading-snug">
+            {name || "Your Name"}
+          </h1>
 
-        {/* Name */}
-        <h1 className="text-3xl font-bold text-center mt-5 text-slate-900">
-          {name}
-        </h1>
-
-        <p className="text-center text-slate-600 text-base">
-          {title}
-        </p>
-
-        {/* Summary */}
-        <div className="mt-8">
-          {summaryArray.length > 0 ? (
-            summaryArray.map((paragraph, index) => (
-              <p key={index} className="text-sm leading-relaxed mb-4">
-                {paragraph}
-              </p>
-            ))
-          ) : (
-            <p className="text-sm text-slate-400 italic">
-              No summary added.
+          {title && (
+            <p className="text-center text-blue-300 text-xs font-medium mt-1">
+              {title}
             </p>
           )}
+
+          {/* Contact Details */}
+          {contactList.length > 0 && (
+            <div className="mt-6 pt-5 border-t border-slate-800">
+              <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5">
+                Contact
+              </h3>
+              <div className="space-y-2 text-[11px] text-slate-300">
+                {contactList.map((c, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <span className="text-[12px] opacity-80">{c.icon}</span>
+                    <span className="truncate">{c.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Skills (Sidebar Chips) */}
+          {normalizedSkills.length > 0 && (
+            <div className="mt-6 pt-5 border-t border-slate-800">
+              <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5">
+                Skills & Tools
+              </h3>
+              <div className="flex flex-wrap gap-1.5">
+                {normalizedSkills.map((skill, index) => (
+                  <span
+                    key={index}
+                    className="px-2 py-0.5 bg-slate-800 text-slate-200 text-[10.5px] rounded-md border border-slate-700"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Languages */}
+          {languageList.length > 0 && (
+            <div className="mt-6 pt-5 border-t border-slate-800">
+              <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5">
+                Languages
+              </h3>
+              <div className="space-y-1.5 text-[11px] text-slate-300">
+                {languageList.map((lang, index) => (
+                  <p key={index} className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                    {lang}
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Certifications in Sidebar */}
+          {certifications && certifications.length > 0 && (
+            <div className="mt-6 pt-5 border-t border-slate-800">
+              <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5">
+                Certifications
+              </h3>
+              <div className="space-y-2 text-[11px]">
+                {certifications.map((cert, index) => (
+                  <div key={cert.id || index} className="text-slate-300">
+                    <p className="font-semibold text-white text-[11px]">
+                      {cert.certificationName}
+                    </p>
+                    {cert.issuer && (
+                      <p className="text-slate-400 text-[10px]">{cert.issuer}</p>
+                    )}
+                    {cert.date && (
+                      <p className="text-slate-500 text-[9.5px]">{cert.date}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Contact */}
-        {contact && (
-          <div className="mt-10 text-sm space-y-1">
-            <p>{contact}</p>
-          </div>
-        )}
-
-        <p className="mt-6 text-xs text-slate-500">
-          References available upon request
-        </p>
+        {/* Brand stamp */}
+        <div className="pt-6 text-center text-[10px] text-slate-600">
+          Professional CV
+        </div>
       </div>
 
-      {/* RIGHT SIDE */}
-      <div className="w-[67%] px-10 py-12">
-
-        {/* WORK EXPERIENCE */}
-        <h2 className="pdf-section-start text-xl font-bold text-slate-800 flex items-center gap-3">
-          <span className="w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center text-white text-sm">
-            💼
-          </span>
-          WORK EXPERIENCE
-        </h2>
-
-        <div className="mt-4 space-y-8">
-          {experience && experience.length > 0 ? (
-            experience.map((job, index) => (
-              <div key={index}>
-                <p className="font-bold text-sm">{job.title}</p>
-                <p className="text-xs text-slate-500">
-                  {[job.company, job.location].filter(Boolean).join(" | ")}
-                  {[job.startDate, job.endDate].some(Boolean)
-                    ? ` | ${[job.startDate, job.endDate].filter(Boolean).join(" – ")}`
-                    : ""}
-                </p>
-
-                {job.description && (
-                  <p className="text-sm mt-2 whitespace-pre-line">
-                    {job.description}
-                  </p>
-                )}
-              </div>
-            ))
-          ) : (
-            <p className="text-sm text-slate-400 italic">No experience added.</p>
+      {/* ==================== RIGHT CONTENT ==================== */}
+      <div className="w-[66%] p-7 bg-white flex flex-col justify-between">
+        <div>
+          {/* Summary */}
+          {summary && (
+            <div className="mb-6">
+              <h2 className="pdf-section-start text-xs font-bold text-blue-600 uppercase tracking-widest flex items-center gap-2 mb-2">
+                <span className="w-1.5 h-3.5 bg-blue-600 rounded-sm"></span>
+                Profile Summary
+              </h2>
+              <p className="text-[12px] text-slate-700 leading-relaxed whitespace-pre-line text-justify">
+                {summary}
+              </p>
+            </div>
           )}
-        </div>
 
-        {/* EDUCATION */}
-        <h2 className="pdf-section-start text-xl font-bold text-slate-800 flex items-center gap-3 mt-10">
-          <span className="w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center text-white text-sm">
-            🎓
-          </span>
-          EDUCATION
-        </h2>
+          {/* Work Experience */}
+          {experience && experience.length > 0 && (
+            <div className="mb-6">
+              <h2 className="pdf-section-start text-xs font-bold text-blue-600 uppercase tracking-widest flex items-center gap-2 mb-3">
+                <span className="w-1.5 h-3.5 bg-blue-600 rounded-sm"></span>
+                Work Experience
+              </h2>
 
-        <div className="mt-4 space-y-6">
-          {education && education.length > 0 ? (
-            education.map((edu, index) => (
-              <div key={index}>
-                <p className="font-bold text-sm">{edu.institution || edu.degree}</p>
-                <p className="text-xs text-slate-500">
-                  {[edu.degree, edu.fieldOfStudy].filter(Boolean).join(", ")}
-                  {edu.cgpa ? ` | GPA: ${edu.cgpa}` : ""}
-                </p>
-                <p className="text-xs text-slate-500">
-                  {[edu.startDate, edu.endDate].filter(Boolean).join(" – ")}
-                </p>
-                {edu.description && (
-                  <p className="text-sm mt-2 whitespace-pre-line">
-                    {edu.description}
-                  </p>
-                )}
+              <div className="space-y-4">
+                {experience.map((job, index) => {
+                  if (!job.title && !job.company && !job.description) return null;
+                  return (
+                    <div key={job.id || index} className="break-inside-avoid relative pl-3.5 border-l-2 border-slate-200">
+                      <div className="absolute -left-[5px] top-1 w-2 h-2 rounded-full bg-blue-500"></div>
+
+                      <div className="flex justify-between items-baseline">
+                        <h4 className="font-bold text-[13px] text-slate-900">
+                          {job.title || "Job Title"}
+                        </h4>
+                        <span className="text-[10.5px] font-medium text-slate-500">
+                          {[job.startDate, job.endDate || "Present"].filter(Boolean).join(" – ")}
+                        </span>
+                      </div>
+
+                      <p className="text-[11.5px] font-medium text-slate-600 mb-1">
+                        {[job.company, job.location].filter(Boolean).join(" • ")}
+                      </p>
+
+                      {job.description && (
+                        <p className="text-[11.5px] text-slate-700 whitespace-pre-line leading-relaxed">
+                          {job.description}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-            ))
-          ) : (
-            <p className="text-sm text-slate-400 italic">No education added.</p>
+            </div>
           )}
-        </div>
 
-        {/* PROJECTS */}
-        {projects && projects.length > 0 && (
-          <>
-            <h2 className="pdf-section-start text-xl font-bold text-slate-800 flex items-center gap-3 mt-10">
-              <span className="w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center text-white text-sm">
-                🚀
-              </span>
-              PROJECTS
-            </h2>
+          {/* Education */}
+          {education && education.length > 0 && (
+            <div className="mb-6">
+              <h2 className="pdf-section-start text-xs font-bold text-blue-600 uppercase tracking-widest flex items-center gap-2 mb-3">
+                <span className="w-1.5 h-3.5 bg-blue-600 rounded-sm"></span>
+                Education
+              </h2>
 
-            <div className="mt-4 space-y-6">
-              {projects.map((proj, index) => (
-                <div key={index}>
-                  <p className="font-bold text-sm">
-                    {proj.projectName}
-                    {proj.technologies && (
-                      <span className="text-xs font-normal text-slate-500">
-                        {" "}— {proj.technologies}
-                      </span>
-                    )}
-                  </p>
-                  {proj.description && (
-                    <p className="text-sm mt-1 whitespace-pre-line">
-                      {proj.description}
+              <div className="space-y-3">
+                {education.map((edu, index) => {
+                  if (!edu.institution && !edu.degree) return null;
+                  return (
+                    <div key={edu.id || index} className="break-inside-avoid relative pl-3.5 border-l-2 border-slate-200">
+                      <div className="absolute -left-[5px] top-1 w-2 h-2 rounded-full bg-slate-400"></div>
+
+                      <div className="flex justify-between items-baseline">
+                        <h4 className="font-bold text-[12.5px] text-slate-900">
+                          {edu.institution || edu.school || "Institution"}
+                        </h4>
+                        <span className="text-[10.5px] text-slate-500">
+                          {[edu.startDate, edu.endDate || edu.year].filter(Boolean).join(" – ")}
+                        </span>
+                      </div>
+
+                      <p className="text-[11.5px] text-slate-600">
+                        {[edu.degree, edu.fieldOfStudy].filter(Boolean).join(", ")}
+                        {edu.cgpa && ` | GPA: ${edu.cgpa}`}
+                      </p>
+
+                      {edu.description && (
+                        <p className="text-[11px] text-slate-600 mt-0.5 whitespace-pre-line">
+                          {edu.description}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Projects */}
+          {projects && projects.length > 0 && (
+            <div className="mb-6">
+              <h2 className="pdf-section-start text-xs font-bold text-blue-600 uppercase tracking-widest flex items-center gap-2 mb-3">
+                <span className="w-1.5 h-3.5 bg-blue-600 rounded-sm"></span>
+                Projects
+              </h2>
+
+              <div className="space-y-3">
+                {projects.map((proj, index) => {
+                  if (!proj.projectName && !proj.description) return null;
+                  return (
+                    <div key={proj.id || index} className="break-inside-avoid">
+                      <div className="flex justify-between items-baseline">
+                        <span className="font-bold text-[12.5px] text-slate-900">
+                          {proj.projectName}
+                          {proj.projectUrl && (
+                            <span className="text-[10.5px] font-normal text-blue-600 ml-1.5">
+                              ({formatUrlDisplay(proj.projectUrl)})
+                            </span>
+                          )}
+                        </span>
+                        {[proj.startDate, proj.endDate].some(Boolean) && (
+                          <span className="text-[10.5px] text-slate-500">
+                            {[proj.startDate, proj.endDate].filter(Boolean).join(" – ")}
+                          </span>
+                        )}
+                      </div>
+
+                      {proj.technologies && (
+                        <p className="text-[11px] font-medium text-slate-500">
+                          {proj.technologies}
+                        </p>
+                      )}
+
+                      {proj.description && (
+                        <p className="text-[11.5px] text-slate-700 mt-0.5 whitespace-pre-line leading-relaxed">
+                          {proj.description}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Custom Sections */}
+          {customSections && customSections.length > 0 && (
+            <div>
+              {customSections.map((sec, index) => {
+                if (!sec.sectionName && !sec.content) return null;
+                return (
+                  <div key={sec.id || index} className="mb-5 break-inside-avoid">
+                    <h2 className="pdf-section-start text-xs font-bold text-blue-600 uppercase tracking-widest flex items-center gap-2 mb-2">
+                      <span className="w-1.5 h-3.5 bg-blue-600 rounded-sm"></span>
+                      {sec.sectionName || "Additional Information"}
+                    </h2>
+                    <p className="text-[11.5px] text-slate-700 whitespace-pre-line leading-relaxed">
+                      {sec.content}
                     </p>
-                  )}
-                </div>
-              ))}
+                  </div>
+                );
+              })}
             </div>
-          </>
-        )}
-
-        {/* SKILLS SECTION */}
-        <h2 className="pdf-section-start text-xl font-bold text-slate-800 flex items-center gap-3 mt-10">
-          <span className="w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center text-white text-sm">
-            🛠️
-          </span>
-          SKILLS
-        </h2>
-
-        <div className="mt-6 flex flex-wrap gap-2 text-sm">
-          {skillNames.length > 0 ? (
-            skillNames.map((skill, index) => (
-              <span
-                key={index}
-                className="px-3 py-1 bg-slate-100 rounded-full border border-slate-200"
-              >
-                {skill}
-              </span>
-            ))
-          ) : (
-            <p className="text-sm text-slate-400 italic">No skills added.</p>
           )}
         </div>
-
-        {/* LANGUAGES */}
-        {languageList.length > 0 && (
-          <>
-            <h2 className="pdf-section-start text-xl font-bold text-slate-800 flex items-center gap-3 mt-10">
-              <span className="w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center text-white text-sm">
-                🗣️
-              </span>
-              LANGUAGES
-            </h2>
-
-            <div className="mt-4 flex flex-wrap gap-2 text-sm">
-              {languageList.map((language, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-slate-100 rounded-full border border-slate-200"
-                >
-                  {language}
-                </span>
-              ))}
-            </div>
-          </>
-        )}
-
-        {/* CERTIFICATIONS */}
-        {certifications && certifications.length > 0 && (
-          <>
-            <h2 className="pdf-section-start text-xl font-bold text-slate-800 flex items-center gap-3 mt-10">
-              <span className="w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center text-white text-sm">
-                🏅
-              </span>
-              CERTIFICATIONS
-            </h2>
-
-            <div className="mt-4 space-y-2 text-sm">
-              {certifications.map((cert, index) => (
-                <p key={index}>
-                  <span className="font-bold">{cert.certificationName}</span>
-                  {cert.issuer && <span className="text-slate-500"> — {cert.issuer}</span>}
-                  {cert.date && <span className="text-slate-500"> ({cert.date})</span>}
-                </p>
-              ))}
-            </div>
-          </>
-        )}
-
       </div>
     </div>
   );
+}
+
+function formatUrlDisplay(url) {
+  if (!url) return "";
+  return url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
 }

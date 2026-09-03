@@ -31,9 +31,20 @@ import { UNIVERSITIES } from "../../data/universities";
 /* ============================================================
    TEMPLATE → ALLOWED SECTIONS
    ============================================================ */
+const ALL_SECTIONS = [
+  "basic",
+  "education",
+  "experience",
+  "skills",
+  "projects",
+  "languages",
+  "certifications",
+  "customSections",
+];
+
 const TEMPLATE_SECTIONS = {
-  classic: ["basic", "education", "experience", "skills", "projects", "languages", "certifications"],
-  modern: ["basic", "education", "experience", "skills", "projects"],
+  classic: ALL_SECTIONS,
+  modern: ALL_SECTIONS,
 };
 
 /* ============================================================
@@ -119,6 +130,7 @@ const ICONS = {
   credentialId: <Award className="h-4 w-4" />,
   credentialUrl: <Link className="h-4 w-4" />,
   sectionName: <Settings className="h-4 w-4" />,
+  content: <Edit3 className="h-4 w-4" />,
 };
 
 const fallbackIcon = <Edit3 className="h-4 w-4" />;
@@ -173,6 +185,7 @@ const SECTION_CONFIG = {
       { name: "title" },
       { name: "email", type: "email" },
       { name: "phone", type: "tel" },
+      { name: "location", type: "text" },
       { name: "country", type: "autocomplete", source: "countries" },
       { name: "state", type: "autocomplete", source: "states" },
       { name: "city", type: "autocomplete", source: "cities" },
@@ -435,8 +448,15 @@ export default function ResumeForm({ activeSection, selectedTemplate = "classic"
   const handleFieldChange = useCallback(
     (field, value) => {
       updateField(field, value);
+      if (field === "city" || field === "state" || field === "country") {
+        const nextData = { ...(formData || {}), [field]: value };
+        const parts = [nextData.city, nextData.state, nextData.country].filter(Boolean);
+        if (parts.length > 0) {
+          updateField("location", parts.join(", "));
+        }
+      }
     },
-    [updateField]
+    [updateField, formData]
   );
 
   const handleArrayFieldChange = useCallback(

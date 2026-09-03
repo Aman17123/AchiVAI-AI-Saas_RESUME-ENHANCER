@@ -1,33 +1,109 @@
 {
-  "name": "",
-  "title": "",
-  "email": "",
-  "phone": "",
-  "linkedin": "",
-  "github": "",
-  "summary": "",
-  "skills": [],
+  "name": "Sarah Jenkins",
+  "title": "Lead Product Designer & Design Engineer",
+  "email": "sarah.jenkins@design.io",
+  "phone": "+1 (555) 432-8765",
+  "location": "New York, NY, USA",
+  "websiteOrGithub": "https://sarahjenkins.design",
+  "linkedin": "https://linkedin.com/in/sarahjenkins-design",
+  "summary": "Creative Product Designer and Design Technologist with 7+ years of experience bridging the gap between design systems, UX research, and production frontend code. Passionate about crafting accessible, high-conversion digital experiences that delight millions of users globally.",
   "experience": [
     {
-      "role": "",
-      "company": "",
-      "startDate": "",
-      "endDate": "",
-      "description": ""
-    }
-  ],
-  "projects": [
+      "id": "exp-1",
+      "title": "Lead Product Designer",
+      "company": "Stratos Design Systems",
+      "location": "New York, NY",
+      "startDate": "2021-08",
+      "endDate": "Present",
+      "description": "Spearheaded the unified multi-platform design system used by 45+ product teams across web, iOS, and Android.\nConducted 60+ user testing sessions, redesigning core checkout flows resulting in a 22% increase in checkout conversions.\nMentored 6 junior and mid-level designers and led weekly cross-functional design crits with engineering leads."
+    },
     {
-      "name": "",
-      "tech": "",
-      "description": ""
+      "id": "exp-2",
+      "title": "Senior UX/UI Designer",
+      "company": "Veloce Mobility Labs",
+      "location": "Brooklyn, NY",
+      "startDate": "2018-05",
+      "endDate": "2021-07",
+      "description": "Designed mobile rider and driver apps from concept to launch, achieving a 4.9 App Store rating across 100k+ reviews.\nBuilt interactive, high-fidelity prototypes using Figma, Framer, and React to accelerate stakeholder approvals."
     }
   ],
   "education": [
     {
-      "degree": "",
-      "school": "",
-      "year": ""
+      "id": "edu-1",
+      "institution": "Rhode Island School of Design",
+      "degree": "Bachelor of Fine Arts",
+      "fieldOfStudy": "Graphic & Interaction Design",
+      "location": "Providence, RI",
+      "startDate": "2014-09",
+      "endDate": "2018-05",
+      "cgpa": "3.9",
+      "description": "Graduated with Honors. Recipient of Annual Excellence in Digital Media Award."
+    }
+  ],
+  "skills": [
+    {
+      "id": "skl-1",
+      "skillName": "Product Design",
+      "description": "Design Systems, User Interface (UI), User Experience (UX), Wireframing, Rapid Prototyping, Accessibility (WCAG)"
+    },
+    {
+      "id": "skl-2",
+      "skillName": "Design & Code Tools",
+      "description": "Figma, Tokens Studio, Framer, Adobe Creative Suite, React, HTML5, CSS/Tailwind, Storybook"
+    },
+    {
+      "id": "skl-3",
+      "skillName": "Research & Strategy",
+      "description": "Qualitative User Testing, Quantitative Analytics, A/B Testing, Information Architecture, Customer Journey Mapping"
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-1",
+      "projectName": "Prism Design Tokens Studio",
+      "technologies": "Figma Plugin, TypeScript, React, Tailwind CSS",
+      "startDate": "2023-03",
+      "endDate": "2023-11",
+      "projectUrl": "https://prismtokens.dev",
+      "description": "Created an open-source Figma plugin that automates cross-platform token sync between Figma and production codebases, installed by 15,000+ designers."
+    },
+    {
+      "id": "proj-2",
+      "projectName": "FinTrack - Personal Finance for Gen Z",
+      "technologies": "Figma, React Native, Framer Motion",
+      "startDate": "2022-06",
+      "endDate": "2022-12",
+      "projectUrl": "https://fintrack-app.com",
+      "description": "Crafted an intuitive budgeting app concept featuring micro-gamification, custom financial illustrations, and seamless onboarding."
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang-1",
+      "language": "English",
+      "proficiency": "Native"
+    },
+    {
+      "id": "lang-2",
+      "language": "French",
+      "proficiency": "Conversational"
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert-1",
+      "certificationName": "Certified Professional in Accessibility Core Competencies (CPACC)",
+      "issuer": "IAAP",
+      "date": "2023-02",
+      "credentialId": "IAAP-CPACC-11029",
+      "credentialUrl": "https://accessibilityassociation.org"
+    }
+  ],
+  "customSections": [
+    {
+      "id": "cust-1",
+      "sectionName": "Publications & Talks",
+      "content": "Keynote Speaker at Figma Config 2024: 'Design Systems That Engineers Actually Love'\nAuthor of 'Atomic Tokens in Modern Web Development' (Smashing Magazine, 2023)"
     }
   ]
 }
