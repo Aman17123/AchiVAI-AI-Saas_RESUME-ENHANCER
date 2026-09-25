@@ -6,7 +6,11 @@ export async function extractText(file, mimeType) {
   const buffer = Buffer.from(await file.arrayBuffer());
   let text = "";
 
-  if (mimeType === "application/pdf") {
+  const isPdf =
+    mimeType === "application/pdf" ||
+    (file?.name && file.name.toLowerCase().endsWith(".pdf"));
+
+  if (isPdf) {
     text = await extractPdfText(buffer);
   } else {
     // DOCX (and .doc fallback through mammoth)
@@ -29,11 +33,25 @@ export async function extractText(file, mimeType) {
 }
 
 async function extractPdfText(buffer) {
-  // Method 1: Use pdfjs-dist legacy build (built specifically for Node.js, no worker thread or Windows file URL issues)
+  const uint8 = new Uint8Array(buffer);
+
+  // Method 1 (Primary & Serverless-safe): unpdf
+  try {
+    const { getDocumentProxy, extractText: unpdfExtract } = await import("unpdf");
+    const pdf = await getDocumentProxy(uint8);
+    const { text } = await unpdfExtract(pdf, { mergePages: true });
+    if (text && text.trim()) {
+      return text;
+    }
+  } catch (err) {
+    console.warn("unpdf extraction failed, trying fallback:", err.message);
+  }
+
+  // Method 2 (Fallback): pdfjs-dist legacy build
   try {
     const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
     const loadingTask = pdfjs.getDocument({
-      data: new Uint8Array(buffer),
+      data: uint8,
       isEvalSupported: false,
       useWorkerFetch: false,
       disableFontFace: true,
@@ -48,25 +66,28 @@ async function extractPdfText(buffer) {
         .join(" ");
       fullText += pageText + " ";
     }
-    if (fullText.trim()) {
+    if (fullText && fullText.trim()) {
       return fullText;
     }
   } catch (err) {
-    console.warn("pdfjs-dist extraction failed, falling back to pdf-parse:", err.message);
+    console.warn("pdfjs-dist extraction failed, trying pdf-parse fallback:", err.message);
   }
 
-  // Method 2: Fallback to pdf-parse
+  // Method 3 (Fallback): pdf-parse
   try {
     const { PDFParse } = await import("pdf-parse");
-    const parser = new PDFParse({ data: buffer, verbosity: 0 });
+    const parser = new PDFParse({ data: uint8, verbosity: 0 });
     try {
       const result = await parser.getText();
-      return result.text || "";
+      if (result.text && result.text.trim()) {
+        return result.text;
+      }
     } finally {
       await parser.destroy();
     }
   } catch (err) {
     console.error("All PDF parsers failed:", err);
-    throw new Error("Failed to parse PDF document. Please ensure it is a valid text PDF.");
   }
+
+  throw new Error("Failed to parse PDF document. Please ensure it is a valid text PDF.");
 }
