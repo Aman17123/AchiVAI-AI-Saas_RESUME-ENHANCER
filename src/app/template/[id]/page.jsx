@@ -16,7 +16,7 @@ import {
   Save, Maximize, Minimize, Type, Settings,
   ZoomIn, ZoomOut, File, Layers, CheckCircle, Info,
   Code, User, Briefcase, GraduationCap, Award, MessageSquare,
-  Star, Plus, Menu, Edit3, Sparkles, X, Loader2
+  Star, Plus, Menu, Edit3
 } from "lucide-react";
 
 
@@ -38,11 +38,6 @@ export default function EditorPage() {
   const [notificationMessage, setNotificationMessage] = useState("");
   const [isExporting, setIsExporting] = useState(false);
   const [isPickerOpen, setIsPickerOpen] = useState(false);
-  const [isEnhancing, setIsEnhancing] = useState(false);
-  const [enhanceModal, setEnhanceModal] = useState(false);
-  const [enhanceField, setEnhanceField] = useState("summary");
-  const [enhanceResult, setEnhanceResult] = useState("");
-  const [enhanceError, setEnhanceError] = useState("");
 
   const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
 
@@ -256,53 +251,6 @@ export default function EditorPage() {
     }
   };
 
-  const handleAIEnhance = async () => {
-    setEnhanceError("");
-    setEnhanceResult("");
-    setIsEnhancing(true);
-    try {
-      const fieldValue = enhanceField === "summary"
-        ? (data.summary || "")
-        : Array.isArray(data[enhanceField])
-          ? JSON.stringify(data[enhanceField])
-          : (data[enhanceField] || "");
-
-      if (!fieldValue.trim()) {
-        setEnhanceError("Please fill in some content in this section first.");
-        setIsEnhancing(false);
-        return;
-      }
-
-      const res = await fetch("/api/enhance-resume", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ field: enhanceField, value: fieldValue, name: data.name, title: data.title }),
-      });
-
-      const text = await res.text();
-      let json;
-      try { json = JSON.parse(text); } catch { throw new Error("Invalid server response"); }
-
-      if (!res.ok) throw new Error(json?.error || "Enhancement failed");
-      setEnhanceResult(json.enhanced || "");
-    } catch (err) {
-      setEnhanceError(err.message || "AI enhancement failed. Please try again.");
-    } finally {
-      setIsEnhancing(false);
-    }
-  };
-
-  const applyEnhancement = () => {
-    if (!enhanceResult) return;
-    if (enhanceField === "summary") {
-      setFullData({ ...data, summary: enhanceResult });
-    }
-    setEnhanceModal(false);
-    setEnhanceResult("");
-    setNotificationMessage("✨ AI enhancement applied!");
-    setShowNotification(true);
-    setTimeout(() => setShowNotification(false), 2500);
-  };
 
   const sections = [
     { id: "basic", name: "Personal Info", icon: <User className="h-5 w-5" /> },
@@ -364,15 +312,6 @@ export default function EditorPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => { setEnhanceModal(true); setEnhanceResult(""); setEnhanceError(""); }}
-              className="flex items-center gap-1.5 bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg transition-all text-sm font-medium shadow-sm"
-              title="AI Enhance Resume"
-            >
-              <Sparkles className="h-4 w-4" />
-              <span className="hidden sm:inline">AI Enhance</span>
-            </button>
-
             <button 
               onClick={handleSave}
               disabled={isSaving}
@@ -658,106 +597,6 @@ export default function EditorPage() {
         )}
 
       </div>
-
-      {/* AI Enhance Modal */}
-      {enhanceModal && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg">
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Sparkles className="h-5 w-5 text-purple-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-slate-900">AI Resume Enhancer</h3>
-                  <p className="text-xs text-slate-500">Powered by Gemini AI</p>
-                </div>
-              </div>
-              <button onClick={() => setEnhanceModal(false)} className="p-2 hover:bg-slate-100 rounded-lg">
-                <X className="h-5 w-5 text-slate-500" />
-              </button>
-            </div>
-
-            <div className="p-6 space-y-4">
-              {/* Section picker */}
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Choose section to enhance</label>
-                <select
-                  value={enhanceField}
-                  onChange={(e) => { setEnhanceField(e.target.value); setEnhanceResult(""); setEnhanceError(""); }}
-                  className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                >
-                  <option value="summary">Professional Summary</option>
-                </select>
-              </div>
-
-              {/* Current content preview */}
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Current content</label>
-                <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm text-slate-600 min-h-[80px] max-h-[120px] overflow-y-auto">
-                  {data?.summary || <span className="text-slate-400 italic">No summary written yet. Add one in the editor first.</span>}
-                </div>
-              </div>
-
-              {/* Error */}
-              {enhanceError && (
-                <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <span className="text-red-600 text-sm">{enhanceError}</span>
-                </div>
-              )}
-
-              {/* Result */}
-              {enhanceResult && (
-                <div>
-                  <label className="block text-sm font-medium text-purple-700 mb-2">✨ AI-Enhanced version</label>
-                  <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 text-sm text-slate-700 min-h-[80px] max-h-[160px] overflow-y-auto whitespace-pre-wrap">
-                    {enhanceResult}
-                  </div>
-                </div>
-              )}
-
-              {/* Actions */}
-              <div className="flex gap-3 pt-2">
-                {!enhanceResult ? (
-                  <button
-                    onClick={handleAIEnhance}
-                    disabled={isEnhancing}
-                    className="flex-1 flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-60 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
-                  >
-                    {isEnhancing ? (
-                      <><Loader2 className="h-4 w-4 animate-spin" /><span>Enhancing...</span></>
-                    ) : (
-                      <><Sparkles className="h-4 w-4" /><span>Enhance with AI</span></>
-                    )}
-                  </button>
-                ) : (
-                  <>
-                    <button
-                      onClick={applyEnhancement}
-                      className="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
-                    >
-                      Apply Enhancement
-                    </button>
-                    <button
-                      onClick={() => { setEnhanceResult(""); setEnhanceError(""); }}
-                      className="px-4 py-2.5 border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-lg text-sm font-medium transition-colors"
-                    >
-                      Try Again
-                    </button>
-                  </>
-                )}
-                <button
-                  onClick={() => setEnhanceModal(false)}
-                  className="px-4 py-2.5 border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-lg text-sm font-medium transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Template Picker Modal */}
       {isPickerOpen && (

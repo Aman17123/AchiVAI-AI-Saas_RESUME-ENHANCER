@@ -4,56 +4,44 @@ import jsPDF from "jspdf";
 const PAGE_RATIO = 297 / 210;
 const MAX_FILL = 0.95;
 
-/**
- * Renders the resume template into an offscreen DOM node,
- * captures it with html2canvas, then slices into A4 pages.
- *
- * Works in Next.js App Router (no renderToString needed).
- */
 export const downloadResumePDF = async (data, theme, templateLayout) => {
-  // 1. Create a hidden, off-screen A4-width wrapper
-  const wrapper = document.createElement("div");
-  wrapper.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: -99999px;
-    width: 210mm;
-    background: #ffffff;
-    z-index: -9999;
-  `;
-  wrapper.className = "pdf-export";
-  document.body.appendChild(wrapper);
-
-  // 2. Find the live preview element in the page (it's already rendered)
-  //    and clone it so we can force a full A4 width without affecting the UI.
+  // Find the live preview already rendered in the DOM
   const livePreview = document.querySelector(".pdf-render-target");
-
-  let container;
-  if (livePreview) {
-    container = livePreview.cloneNode(true);
-    container.style.width = "210mm";
-    container.style.maxWidth = "none";
-    container.style.transform = "none";
-    wrapper.appendChild(container);
-  } else {
-    // Fallback: render using an iframe-style approach
-    wrapper.innerHTML = `<div id="pdf-inner" style="width:210mm;background:#fff;padding:0;margin:0;"></div>`;
-    container = wrapper.querySelector("#pdf-inner");
+  if (!livePreview) {
+    throw new Error("No resume preview found. Please wait for the editor to load.");
   }
 
+  // 1. Clone the live preview into an off-screen A4 wrapper
+  const wrapper = document.createElement("div");
+  wrapper.style.cssText = [
+    "position:fixed",
+    "top:0",
+    "left:-99999px",
+    "width:794px",      // ≈ 210mm @ 96dpi
+    "background:#ffffff",
+    "z-index:-9999",
+    "overflow:visible",
+  ].join(";");
+
+  const clone = livePreview.cloneNode(true);
+  clone.style.cssText = "width:794px;max-width:none;transform:none;overflow:visible;";
+  wrapper.appendChild(clone);
   document.body.appendChild(wrapper);
 
-  // 3. Wait for fonts + layout
+  // 2. Inline ALL computed colors so html2canvas never sees oklch / lab / color()
+  inlineComputedColors(wrapper);
+
+  // 3. Wait for layout + fonts
   await document.fonts.ready;
-  await new Promise((r) => setTimeout(r, 400));
+  await new Promise((r) => setTimeout(r, 300));
 
   try {
-    const containerRect = wrapper.getBoundingClientRect();
+    const wrapperRect = wrapper.getBoundingClientRect();
 
-    // 4. Snap boundaries at section starts
+    // 4. Section snap points for clean page breaks
     const boundaries = [0];
     wrapper.querySelectorAll(".pdf-section-start").forEach((el) => {
-      const top = el.getBoundingClientRect().top - containerRect.top;
+      const top = el.getBoundingClientRect().top - wrapperRect.top;
       if (top > 1) boundaries.push(Math.round(top));
     });
 
@@ -64,13 +52,13 @@ export const downloadResumePDF = async (data, theme, templateLayout) => {
       allowTaint: true,
       backgroundColor: "#ffffff",
       logging: false,
-      onclone: (doc) => normalizeExoticColors(doc),
+      // No onclone needed — we already inlined all colors above
     });
 
     document.body.removeChild(wrapper);
 
-    // 6. Compute page slices
-    const widthPx = containerRect.width || 794;
+    // 6. Slice into A4 pages
+    const widthPx = wrapperRect.width || 794;
     const pageHeightPx = widthPx * PAGE_RATIO;
     const ratio = canvas.width / widthPx;
     const totalPx = canvas.height / ratio;
@@ -90,73 +78,99 @@ export const downloadResumePDF = async (data, theme, templateLayout) => {
       if (pages.length > 30) break;
     }
 
-    // 7. Build PDF
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "a4",
-    });
-
+    // 7. Build the PDF
+    const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
     const imgWidth = 210;
 
     pages.forEach((page, i) => {
-      const sliceHeightPx = Math.max(1, Math.round((page.bottom - page.top) * ratio));
-      const sliceWidthPx = canvas.width;
+      const sliceH = Math.max(1, Math.round((page.bottom - page.top) * ratio));
+      const sliceW = canvas.width;
       const startY = Math.round(page.top * ratio);
 
-      const sliceCanvas = document.createElement("canvas");
-      sliceCanvas.width = sliceWidthPx;
-      sliceCanvas.height = sliceHeightPx;
-      const ctx = sliceCanvas.getContext("2d");
+      const slice = document.createElement("canvas");
+      slice.width = sliceW;
+      slice.height = sliceH;
+      const ctx = slice.getContext("2d");
+      if (!ctx) return;
 
-      if (ctx) {
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, sliceWidthPx, sliceHeightPx);
-        ctx.drawImage(canvas, 0, startY, sliceWidthPx, sliceHeightPx, 0, 0, sliceWidthPx, sliceHeightPx);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, sliceW, sliceH);
+      ctx.drawImage(canvas, 0, startY, sliceW, sliceH, 0, 0, sliceW, sliceH);
 
-        const sliceData = sliceCanvas.toDataURL("image/png");
-        const sliceHeightMm = (sliceHeightPx * imgWidth) / sliceWidthPx;
-
-        if (i > 0) pdf.addPage();
-        pdf.addImage(sliceData, "PNG", 0, 0, imgWidth, sliceHeightMm);
-      }
+      const imgData = slice.toDataURL("image/png");
+      const imgH = (sliceH * imgWidth) / sliceW;
+      if (i > 0) pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgH);
     });
 
     // 8. Trigger download
-    const cleanFileName = (data?.name || "Resume")
-      .trim()
-      .replace(/[^a-zA-Z0-9_-]/g, "_");
-    pdf.save(`${cleanFileName}_${templateLayout || "resume"}.pdf`);
+    const safeName = (data?.name || "Resume").trim().replace(/[^a-zA-Z0-9_-]/g, "_");
+    pdf.save(`${safeName}_${templateLayout || "resume"}.pdf`);
 
     return true;
   } catch (err) {
-    console.error("PDF generation failed:", err);
-    if (wrapper?.parentNode) {
-      document.body.removeChild(wrapper);
-    }
-    throw err; // Re-throw so caller can show real error
+    if (wrapper?.parentNode) document.body.removeChild(wrapper);
+    throw err;
   }
 };
 
-// html2canvas can't parse lab()/oklch()/color() — normalize to rgb
-function normalizeExoticColors(doc) {
-  const probe = document.createElement("canvas").getContext("2d");
-  if (!probe) return;
+/**
+ * Walk every element and replace any oklch / lab / color() value
+ * with the browser-resolved RGB equivalent using a canvas 2D probe.
+ * This must run BEFORE html2canvas, not inside onclone.
+ */
+function inlineComputedColors(root) {
+  const probe = document.createElement("canvas");
+  probe.width = probe.height = 1;
+  const ctx = probe.getContext("2d");
+  if (!ctx) return;
 
-  const props = [
-    "color", "backgroundColor",
-    "borderTopColor", "borderRightColor",
-    "borderBottomColor", "borderLeftColor",
+  const COLOR_PROPS = [
+    "color",
+    "backgroundColor",
+    "borderTopColor",
+    "borderRightColor",
+    "borderBottomColor",
+    "borderLeftColor",
+    "outlineColor",
+    "fill",
+    "stroke",
   ];
 
-  doc.querySelectorAll("*").forEach((el) => {
-    props.forEach((prop) => {
-      const value = el.style[prop] || getComputedStyle(el)[prop];
-      if (typeof value !== "string") return;
-      if (!value.match(/lab\(|oklch\(|color\(/)) return;
-      probe.fillStyle = value;
-      const rgb = probe.fillStyle;
-      if (rgb && rgb !== value) el.style[prop] = rgb;
+  const EXOTIC = /oklch\s*\(|oklab\s*\(|lab\s*\(|lch\s*\(|color\s*\(/i;
+
+  root.querySelectorAll("*").forEach((el) => {
+    const computed = window.getComputedStyle(el);
+
+    COLOR_PROPS.forEach((prop) => {
+      const val = computed[prop];
+      if (!val || !EXOTIC.test(val)) return;
+
+      try {
+        ctx.clearRect(0, 0, 1, 1);
+        ctx.fillStyle = val;           // browser converts oklch → sRGB internally
+        const rgb = ctx.fillStyle;     // returns '#rrggbb' or 'rgb(...)'
+        if (rgb && rgb !== val) {
+          el.style.setProperty(
+            prop.replace(/([A-Z])/g, (m) => `-${m.toLowerCase()}`),
+            rgb,
+            "important"
+          );
+        }
+      } catch {
+        // If conversion fails, fall back to a neutral colour
+        el.style.setProperty(
+          prop.replace(/([A-Z])/g, (m) => `-${m.toLowerCase()}`),
+          prop.includes("background") ? "#ffffff" : "#000000",
+          "important"
+        );
+      }
     });
+
+    // Also kill any box-shadow that uses exotic colors (html2canvas can't parse them)
+    const shadow = computed.boxShadow;
+    if (shadow && EXOTIC.test(shadow)) {
+      el.style.setProperty("box-shadow", "none", "important");
+    }
   });
 }
