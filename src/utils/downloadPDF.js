@@ -1,46 +1,64 @@
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import React from "react";
-import { renderToString } from "react-dom/server";
-import { getPDFTemplate } from "../components/PDFTemplates/PDFTemplateFactory";
 
 const PAGE_RATIO = 297 / 210;
 const MAX_FILL = 0.95;
 
+/**
+ * Renders the resume template into an offscreen DOM node,
+ * captures it with html2canvas, then slices into A4 pages.
+ *
+ * Works in Next.js App Router (no renderToString needed).
+ */
 export const downloadResumePDF = async (data, theme, templateLayout) => {
+  // 1. Create a hidden, off-screen A4-width wrapper
+  const wrapper = document.createElement("div");
+  wrapper.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: -99999px;
+    width: 210mm;
+    background: #ffffff;
+    z-index: -9999;
+  `;
+  wrapper.className = "pdf-export";
+  document.body.appendChild(wrapper);
+
+  // 2. Find the live preview element in the page (it's already rendered)
+  //    and clone it so we can force a full A4 width without affecting the UI.
+  const livePreview = document.querySelector(".pdf-render-target");
+
   let container;
+  if (livePreview) {
+    container = livePreview.cloneNode(true);
+    container.style.width = "210mm";
+    container.style.maxWidth = "none";
+    container.style.transform = "none";
+    wrapper.appendChild(container);
+  } else {
+    // Fallback: render using an iframe-style approach
+    wrapper.innerHTML = `<div id="pdf-inner" style="width:210mm;background:#fff;padding:0;margin:0;"></div>`;
+    container = wrapper.querySelector("#pdf-inner");
+  }
+
+  document.body.appendChild(wrapper);
+
+  // 3. Wait for fonts + layout
+  await document.fonts.ready;
+  await new Promise((r) => setTimeout(r, 400));
 
   try {
-    const TemplateComponent = getPDFTemplate(templateLayout);
+    const containerRect = wrapper.getBoundingClientRect();
 
-    // 1️⃣ Hidden container at exact A4 width
-    container = document.createElement("div");
-    container.style.width = "210mm";
-    container.style.backgroundColor = "#ffffff";
-    container.style.position = "fixed";
-    container.style.top = "0";
-    container.style.left = "-10000px";
-    container.style.zIndex = "-1";
-    container.className = "pdf-export";
-
-    document.body.appendChild(container);
-
-    // 2️⃣ Render React → HTML
-    container.innerHTML = renderToString(<TemplateComponent data={data} theme={theme} />);
-
-    // 3️⃣ Wait for fonts and styling
-    await new Promise((r) => setTimeout(r, 600));
-
-    // 4️⃣ Measure block-aware break points (tops of .pdf-section-start)
-    const containerRect = container.getBoundingClientRect();
+    // 4. Snap boundaries at section starts
     const boundaries = [0];
-    container.querySelectorAll(".pdf-section-start").forEach((el) => {
+    wrapper.querySelectorAll(".pdf-section-start").forEach((el) => {
       const top = el.getBoundingClientRect().top - containerRect.top;
       if (top > 1) boundaries.push(Math.round(top));
     });
 
-    // 5️⃣ html2canvas (colors preserved, exotic color spaces normalized)
-    const canvas = await html2canvas(container, {
+    // 5. Capture with html2canvas
+    const canvas = await html2canvas(wrapper, {
       scale: 2,
       useCORS: true,
       allowTaint: true,
@@ -49,12 +67,10 @@ export const downloadResumePDF = async (data, theme, templateLayout) => {
       onclone: (doc) => normalizeExoticColors(doc),
     });
 
-    // 6️⃣ Cleanup DOM
-    document.body.removeChild(container);
-    container = null;
+    document.body.removeChild(wrapper);
 
-    // 7️⃣ Compute page slices in layout px, snapping to section boundaries
-    const widthPx = containerRect.width || 794; // approx 210mm at 96dpi
+    // 6. Compute page slices
+    const widthPx = containerRect.width || 794;
     const pageHeightPx = widthPx * PAGE_RATIO;
     const ratio = canvas.width / widthPx;
     const totalPx = canvas.height / ratio;
@@ -74,7 +90,7 @@ export const downloadResumePDF = async (data, theme, templateLayout) => {
       if (pages.length > 30) break;
     }
 
-    // 8️⃣ Draw clean slices onto jsPDF
+    // 7. Build PDF
     const pdf = new jsPDF({
       orientation: "portrait",
       unit: "mm",
@@ -96,17 +112,7 @@ export const downloadResumePDF = async (data, theme, templateLayout) => {
       if (ctx) {
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, sliceWidthPx, sliceHeightPx);
-        ctx.drawImage(
-          canvas,
-          0,
-          startY,
-          sliceWidthPx,
-          sliceHeightPx,
-          0,
-          0,
-          sliceWidthPx,
-          sliceHeightPx
-        );
+        ctx.drawImage(canvas, 0, startY, sliceWidthPx, sliceHeightPx, 0, 0, sliceWidthPx, sliceHeightPx);
 
         const sliceData = sliceCanvas.toDataURL("image/png");
         const sliceHeightMm = (sliceHeightPx * imgWidth) / sliceWidthPx;
@@ -116,35 +122,31 @@ export const downloadResumePDF = async (data, theme, templateLayout) => {
       }
     });
 
-    // 9️⃣ Download
-    const cleanFileName = (data.name || "Resume")
+    // 8. Trigger download
+    const cleanFileName = (data?.name || "Resume")
       .trim()
       .replace(/[^a-zA-Z0-9_-]/g, "_");
-    pdf.save(`${cleanFileName}_${templateLayout}.pdf`);
+    pdf.save(`${cleanFileName}_${templateLayout || "resume"}.pdf`);
 
     return true;
   } catch (err) {
     console.error("PDF generation failed:", err);
-    if (container && container.parentNode) {
-      document.body.removeChild(container);
+    if (wrapper?.parentNode) {
+      document.body.removeChild(wrapper);
     }
-    return false;
+    throw err; // Re-throw so caller can show real error
   }
 };
 
-// html2canvas can't parse lab()/oklch()/color() values, so normalize them to
-// rgb colors while keeping the intended color (instead of forcing black/white).
+// html2canvas can't parse lab()/oklch()/color() — normalize to rgb
 function normalizeExoticColors(doc) {
   const probe = document.createElement("canvas").getContext("2d");
   if (!probe) return;
 
   const props = [
-    "color",
-    "backgroundColor",
-    "borderTopColor",
-    "borderRightColor",
-    "borderBottomColor",
-    "borderLeftColor",
+    "color", "backgroundColor",
+    "borderTopColor", "borderRightColor",
+    "borderBottomColor", "borderLeftColor",
   ];
 
   doc.querySelectorAll("*").forEach((el) => {
