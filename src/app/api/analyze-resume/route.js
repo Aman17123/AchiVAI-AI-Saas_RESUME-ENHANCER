@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { extractText } from "../../../lib/fileParsers";
 import { buildAnalysisPrompt } from "../../../lib/prompt";
@@ -96,17 +97,33 @@ export async function POST(request) {
     const resumeText = await extractText(file, file.type);
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-      generationConfig: {
-        responseMimeType: "application/json",
-        temperature: 0.4,
-      },
-    });
+    const candidateModels = ["gemini-3.6-flash", "gemini-3.8-flash", "gemini-flash-latest"];
+    let result = null;
+    let lastError = null;
 
-    const result = await model.generateContent(
-      buildAnalysisPrompt({ resumeText, jobDescription })
-    );
+    for (const modelName of candidateModels) {
+      try {
+        const model = genAI.getGenerativeModel({
+          model: modelName,
+          generationConfig: {
+            responseMimeType: "application/json",
+            temperature: 0.4,
+          },
+        });
+
+        result = await model.generateContent(
+          buildAnalysisPrompt({ resumeText, jobDescription })
+        );
+        if (result) break;
+      } catch (err) {
+        lastError = err;
+        console.warn(`Model ${modelName} failed, trying next model:`, err.message);
+      }
+    }
+
+    if (!result) {
+      throw lastError || new Error("All AI models failed to generate content.");
+    }
 
     const raw = result.response.text();
 
@@ -159,8 +176,5 @@ function normalize(a) {
 }
 
 function json(body, init) {
-  return new Response(JSON.stringify(body), {
-    ...init,
-    headers: { "Content-Type": "application/json" },
-  });
+  return NextResponse.json(body, init);
 }

@@ -181,10 +181,15 @@ export default function Landing() {
       }
 
       let data;
+      const text = await res.text();
       try {
-        data = await res.json();
+        data = JSON.parse(text);
       } catch {
-        throw new Error("The server returned an unexpected response. Please try again.");
+        throw new Error(
+          res.status >= 500
+            ? "Server error during analysis. Please check your AI API key or retry in a moment."
+            : `Server returned unexpected response (status ${res.status}). Please try again.`
+        );
       }
 
       if (!res.ok) throw new Error(data?.error || "Analysis failed");

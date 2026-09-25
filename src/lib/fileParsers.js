@@ -1,17 +1,4 @@
-import { createRequire } from "module";
 import mammoth from "mammoth";
-
-// pdf-parse v2 exposes a PDFParse class (CommonJS) — load it via require.
-const require = createRequire(import.meta.url);
-const { PDFParse } = require("pdf-parse");
-
-// Point pdf.js at the real worker so it doesn't fall back to a "fake worker"
-// (which emits "Cannot find module './pdf.worker.mjs'" warnings in Node).
-try {
-  PDFParse.setWorker(require.resolve("pdfjs-dist/build/pdf.worker.mjs"));
-} catch {
-  // Worker path resolution is best-effort; parsing still works without it.
-}
 
 const MAX_CHARS = 30000;
 
@@ -20,13 +7,7 @@ export async function extractText(file, mimeType) {
   let text = "";
 
   if (mimeType === "application/pdf") {
-    const parser = new PDFParse({ data: buffer, verbosity: 0 });
-    try {
-      const result = await parser.getText();
-      text = result.text;
-    } finally {
-      await parser.destroy();
-    }
+    text = await extractPdfText(buffer);
   } else {
     // DOCX (and .doc fallback through mammoth)
     const result = await mammoth.extractRawText({ buffer });
@@ -45,4 +26,47 @@ export async function extractText(file, mimeType) {
   }
 
   return text.slice(0, MAX_CHARS);
+}
+
+async function extractPdfText(buffer) {
+  // Method 1: Use pdfjs-dist legacy build (built specifically for Node.js, no worker thread or Windows file URL issues)
+  try {
+    const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+    const loadingTask = pdfjs.getDocument({
+      data: new Uint8Array(buffer),
+      isEvalSupported: false,
+      useWorkerFetch: false,
+      disableFontFace: true,
+    });
+    const doc = await loadingTask.promise;
+    let fullText = "";
+    for (let i = 1; i <= doc.numPages; i++) {
+      const page = await doc.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items
+        .map((item) => (item.str ? item.str : ""))
+        .join(" ");
+      fullText += pageText + " ";
+    }
+    if (fullText.trim()) {
+      return fullText;
+    }
+  } catch (err) {
+    console.warn("pdfjs-dist extraction failed, falling back to pdf-parse:", err.message);
+  }
+
+  // Method 2: Fallback to pdf-parse
+  try {
+    const { PDFParse } = await import("pdf-parse");
+    const parser = new PDFParse({ data: buffer, verbosity: 0 });
+    try {
+      const result = await parser.getText();
+      return result.text || "";
+    } finally {
+      await parser.destroy();
+    }
+  } catch (err) {
+    console.error("All PDF parsers failed:", err);
+    throw new Error("Failed to parse PDF document. Please ensure it is a valid text PDF.");
+  }
 }
