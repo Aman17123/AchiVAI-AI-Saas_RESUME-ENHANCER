@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { Crown, Upload, FileText } from "lucide-react";
+import { Crown, Upload, FileText, GitBranch, ScanSearch } from "lucide-react";
 import Navbar from "../_component/Navbar";
 import Footer from "../_component/Footer";
 
@@ -16,21 +16,22 @@ const VALID_TYPES = [
 
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
+const ANALYZING_STEPS = [
+  "Reading binary document stream...",
+  "Running ATS Parser X-Ray (stream & layout collision check)...",
+  "Scanning keywords & deterministic ATS signals...",
+  "Auditing repository proof-of-work & skill grounding...",
+  "Generating deep optimization report...",
+];
+
 /** Full-screen modal shown while the AI is crunching the resume */
 function AnalyzingModal() {
-  const steps = [
-    "Reading your resume...",
-    "Scanning keywords & ATS signals...",
-    "Matching against job description...",
-    "Generating smart suggestions...",
-    "Almost done...",
-  ];
   const [stepIndex, setStepIndex] = useState(0);
 
   useEffect(() => {
     const id = setInterval(() => {
-      setStepIndex((prev) => (prev < steps.length - 1 ? prev + 1 : prev));
-    }, 2200);
+      setStepIndex((prev) => (prev < ANALYZING_STEPS.length - 1 ? prev + 1 : prev));
+    }, 2000);
     return () => clearInterval(id);
   }, []);
 
@@ -91,7 +92,7 @@ function AnalyzingModal() {
               transition={{ duration: 0.2 }}
               className="text-sm text-gray-400"
             >
-              {steps[stepIndex]}
+              {ANALYZING_STEPS[stepIndex]}
             </motion.p>
           </AnimatePresence>
         </div>
@@ -105,7 +106,7 @@ function AnalyzingModal() {
             className="h-full rounded-full"
             style={{ backgroundColor: "#111827" }}
             initial={{ width: "6%" }}
-            animate={{ width: `${Math.round(((stepIndex + 1) / steps.length) * 80) + 8}%` }}
+            animate={{ width: `${Math.round(((stepIndex + 1) / ANALYZING_STEPS.length) * 80) + 8}%` }}
             transition={{ duration: 0.55, ease: "easeOut" }}
           />
         </div>
@@ -120,6 +121,7 @@ export default function Landing() {
   const router = useRouter();
   const [file, setFile] = useState(null);
   const [jobDescription, setJobDescription] = useState("");
+  const [githubUrl, setGithubUrl] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [plan, setPlan] = useState("guest");
@@ -168,6 +170,9 @@ export default function Landing() {
       formData.append("file", file);
       if (jobDescription.trim()) {
         formData.append("jobDescription", jobDescription.trim());
+      }
+      if (githubUrl.trim()) {
+        formData.append("githubUrl", githubUrl.trim());
       }
 
       const res = await fetch("/api/analyze-resume", {
@@ -301,13 +306,35 @@ export default function Landing() {
               />
             </div>
 
+            <div className="w-full max-w-xl text-left">
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
+                  <GitBranch className="w-3.5 h-3.5 text-indigo-600" />
+                  Optional: GitHub Project Repo (Proof-of-Work Engine)
+                </label>
+                <span className="text-[10px] font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200">
+                  New Feature
+                </span>
+              </div>
+              <input
+                type="url"
+                value={githubUrl}
+                onChange={(e) => setGithubUrl(e.target.value)}
+                placeholder="e.g. https://github.com/username/project-repo"
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <p className="text-[11px] text-gray-500 mt-1">
+                Validates resume claims against real commit histories and dependency manifests to earn verifiable Proof-of-Work skill badges.
+              </p>
+            </div>
+
             {file && (
               <button
                 onClick={handleAnalyze}
                 disabled={loading}
-                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white rounded-md cursor-pointer transition text-sm font-semibold"
+                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white rounded-md cursor-pointer transition text-sm font-semibold flex items-center gap-2 shadow-sm"
               >
-                Analyze with AI
+                <ScanSearch className="w-4 h-4" /> Run Deep AI & X-Ray Analysis
               </button>
             )}
 
