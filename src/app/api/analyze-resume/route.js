@@ -19,10 +19,10 @@ const VALID_TYPES = [
 
 export async function POST(request) {
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return json(
-        { error: "AI service is not configured. Add GEMINI_API_KEY to continue." },
+        { error: "AI service is not configured. Add GROQ_API_KEY or GEMINI_API_KEY to continue." },
         { status: 500 }
       );
     }
